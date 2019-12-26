@@ -98,10 +98,12 @@ class SecondCategory(models.Model):
     title = models.CharField(max_length=120)
     # slug = models.SlugField(unique=True, choices=SECOND_CATEGORY)
     first_category = models.ForeignKey(FirstCategory, on_delete=models.CASCADE)
+    link_url = models.CharField(blank=True, max_length=50)
     img_height = models.IntegerField(blank=True)
     img_width = models.IntegerField(blank=True)
     cover_img = models.ImageField(upload_to=second_category_image_upload, height_field='img_height',
                                   width_field='img_width')
+    order = models.IntegerField(default=1)
     active = models.BooleanField(default=True)
     update_time = models.DateTimeField(auto_now=True)
     create_time = models.DateTimeField(auto_now_add=True)
@@ -154,7 +156,7 @@ class ThemeActivity(models.Model):
 
 class ProductQuerySet(models.query.QuerySet):
     def active(self):
-        return self.filter(active=True)
+        return self.filter(is_active=True)
 
 
 class ProductManager(models.Manager):
@@ -172,7 +174,7 @@ def product_cover_image_upload(instance, filename):
     new_filename = uuid.uuid4()
     name, ext = get_filename_ext(filename)
     image_name = '{new_filename}{ext}'.format(new_filename=new_filename, ext=ext)
-    return "image/product/cover/{image_name}".format(image_name=image_name)
+    return "image/product/{product_id}/cover/{image_name}".format(product_id=instance.product.id, image_name=image_name)
 
 
 # 产品
@@ -182,19 +184,35 @@ class Product(models.Model):
     first_category = models.ForeignKey(FirstCategory, on_delete=models.CASCADE)
     second_category = models.ForeignKey(SecondCategory, on_delete=models.CASCADE)
     ThemeActivity = models.ForeignKey(ThemeActivity, null=True, blank=True, on_delete=models.SET_NULL)
-    img_height = models.IntegerField(blank=True)
-    img_width = models.IntegerField(blank=True)
-    cover_img = models.ImageField(upload_to=product_cover_image_upload, height_field='img_height', width_field='img_width')
-    original_price = models.DecimalField(default=0, decimal_places=2, max_digits=10)
-    discount_price = models.DecimalField(default=0, decimal_places=2, max_digits=10)
-    active = models.BooleanField(default=True)
     update_time = models.DateTimeField(auto_now=True)
     create_time = models.DateTimeField(auto_now_add=True)
-
+    is_active = models.BooleanField(default=True)
     objects = ProductManager()
 
     def __str__(self):
         return self.title
+
+
+# 产品规格
+class Sku(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    version = models.CharField(max_length=50)
+    color = models.CharField(max_length=10)
+    img_height = models.IntegerField(blank=True)
+    img_width = models.IntegerField(blank=True)
+    cover_img = models.ImageField(upload_to=product_cover_image_upload, height_field='img_height',
+                                  width_field='img_width')
+    original_price = models.DecimalField(default=0, decimal_places=2, max_digits=10)
+    discount_price = models.DecimalField(default=0, decimal_places=2, max_digits=10)
+    inventory = models.IntegerField()
+    min_purchase_num = models.IntegerField(default=1)
+    max_purchase_num = models.IntegerField(default=9999)
+    is_active = models.BooleanField(default=True)
+    update_time = models.DateTimeField(auto_now=True)
+    create_time = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return '{}_{}_{}'.format(self.product.title, self.version, self.color)
 
 
 def product_detail_image_upload(instance, filename):

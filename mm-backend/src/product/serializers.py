@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import FirstCategory, AdProduct, Product
+from .models import FirstCategory, AdProduct, Product, Sku
 
 
 class StringListField(serializers.ListField):
@@ -25,13 +25,25 @@ class AdProductListSerializer(serializers.ModelSerializer):
         ]
 
 
+class SkuListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sku
+        fields = [
+            'version',
+            'color',
+            'cover_img',
+            'original_price',
+            'discount_price',
+        ]
+
+
 class ProductListSerializer(serializers.ModelSerializer):
+    sku_set = SkuListSerializer(many=True, read_only=True)
+
     class Meta:
         model = Product
         fields = [
             'title',
             'desc',
-            'cover_img',
-            'original_price',
-            'discount_price',
+            'sku_set',
         ]

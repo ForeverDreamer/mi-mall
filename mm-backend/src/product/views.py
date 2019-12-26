@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import FirstCategory, AdProduct, ThemeActivity, Product
+from .models import FirstCategory, AdProduct, ThemeActivity, Product, SecondCategory
 from .serializers import ProductListSerializer
 
 
@@ -15,11 +15,31 @@ class RecommendsAPIView(APIView):
         first_category_list = FirstCategory.objects.values('title')
         ad_product_list = AdProduct.objects.values('location', 'image', 'link_url')
         theme_activity_list = ThemeActivity.objects.values('title', 'cover_img', 'link_url', 'order')
-        product_list = Product.objects.values('title', 'desc', 'cover_img', 'original_price', 'discount_price')
+        product_list = Product.objects.values('title', 'desc')
+        for p1, p2 in zip(product_list, Product.objects.all()):
+            p1['sku_set'] = p2.sku_set.all().values('version', 'color', 'cover_img', 'original_price', 'discount_price')
         data = {
             'first_category_list': first_category_list,
             'ad_product_list': ad_product_list,
             'theme_activity_list': theme_activity_list,
+            'product_list': product_list,
+        }
+        return Response({'data': data}, status=status.HTTP_200_OK)
+
+
+class CellphoneAPIView(APIView):
+    def get(self, *args, **kwargs):
+        ad_product_list = AdProduct.objects.values('location', 'image', 'link_url')
+        second_category_list = SecondCategory.objects.filter(first_category__slug='cellphone').values('title',
+                                                                                                      'cover_img',
+                                                                                                      'link_url',
+                                                                                                      'order')
+        product_list = Product.objects.values('title', 'desc')
+        for p1, p2 in zip(product_list, Product.objects.all()):
+            p1['sku_set'] = p2.sku_set.all().values('version', 'color', 'cover_img', 'original_price', 'discount_price')
+        data = {
+            'ad_product_list': ad_product_list,
+            'second_category_list': second_category_list,
             'product_list': product_list,
         }
         return Response({'data': data}, status=status.HTTP_200_OK)
