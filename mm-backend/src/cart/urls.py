@@ -8,11 +8,8 @@ from .views import (
 urlpatterns = [
     path('', ProductCartItemListView.as_view(), name='cart-list'),
     path('add/', ProductCartItemCreateView.as_view(), name='cart-add'),
-    # path('cellphone/', CellphoneAPIView.as_view(), name='cellphone'),
-    # # 以下分类标签数据接口和手机几乎一样，暂时不用做
-    # path('Intelligence//', RecommendsAPIView.as_view(), name='Intelligence'),
-    # path('tv/', RecommendsAPIView.as_view(), name='tv'),
-    # path('laptop//', RecommendsAPIView.as_view(), name='laptop'),
-    # path('appliance/', RecommendsAPIView.as_view(), name='appliance'),
-    # path('life/', RecommendsAPIView.as_view(), name='life'),
+    # 修改购物车商品数量或型号(单个)
+    path('update/', ProductCartItemCreateView.as_view(), name='cart-add'),
+    # 删除购物车商品(单个或多个)
+    path('delete/', ProductCartItemCreateView.as_view(), name='cart-add'),
 ]

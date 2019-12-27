@@ -2,6 +2,8 @@ import os
 
 from rest_framework.views import exception_handler
 
+from mm.exceptions import MmException
+
 
 def custom_exception_handler(exc, context):
     # Call REST framework's default exception handler first,
@@ -9,7 +11,7 @@ def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
 
     # Now add the HTTP status code to the response.
-    if response is not None:
+    if response is not None and isinstance(exc, MmException):
         # response.data['status_code'] = response.status_code
         response.data['error_code'] = exc.get_codes()
 

@@ -35,6 +35,7 @@ class ProductCartItemCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductCartItem
         fields = [
+            'cart',
             'sku',
             'purchase_num',
         ]
