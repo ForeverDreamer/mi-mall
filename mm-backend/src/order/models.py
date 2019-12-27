@@ -42,7 +42,7 @@ ADDR_TAG = (
 
 class ShippingAddressQuerySet(models.query.QuerySet):
     def active(self):
-        return self.filter(active=True)
+        return self.filter(is_active=True)
 
 
 class ShippingAddressManager(models.Manager):
@@ -62,9 +62,9 @@ class ShippingAddress(models.Model):
     county = models.CharField(max_length=20)
     town = models.CharField(max_length=20)
     street = models.CharField(max_length=100)
-    tag = models.CharField(max_length=10, choices=ADDR_TAG)
+    tag = models.CharField(max_length=10, choices=ADDR_TAG, null=True, blank=True)
     is_default = models.BooleanField(default=False)
-    last_use_time = models.DateTimeField()
+    last_use_time = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     update_time = models.DateTimeField(auto_now=True)
     create_time = models.DateTimeField(auto_now_add=True)
@@ -72,4 +72,4 @@ class ShippingAddress(models.Model):
     objects = ShippingAddressManager()
 
     def __str__(self):
-        return '{}_{}_{}'.format(self.owner.username, self.name, self.tag)
+        return '{}_{}_{}'.format(self.owner.username, self.name, self.street)

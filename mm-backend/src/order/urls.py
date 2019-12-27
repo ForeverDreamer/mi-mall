@@ -1,13 +1,13 @@
 from django.urls import path
 
-# from .views import (
-#     RecommendsAPIView,
-#     LoadMoreAPIView,
-#     CellphoneAPIView,
-#     )
+from .views import (
+    ShippingAddressListCreateView,
+    ShippingAddressUpdateDeleteView,
+    )
 
 urlpatterns = [
-    # path('recommends/', RecommendsAPIView.as_view(), name='recommends'),
+    path('shippingaddress/', ShippingAddressListCreateView.as_view(), name='shippingaddress-listcreate'),
+    path('shippingaddress/<str:pk>/', ShippingAddressUpdateDeleteView.as_view(), name='shippingaddress-detail'),
     # path('loadmore/', LoadMoreAPIView.as_view(), name='loadmore'),
     # path('cellphone/', CellphoneAPIView.as_view(), name='cellphone'),
     # # 以下分类标签数据接口和手机几乎一样，暂时不用做

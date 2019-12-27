@@ -1,14 +1,13 @@
 from django.urls import path
 
-# from .views import (
-#     RecommendsAPIView,
-#     LoadMoreAPIView,
-#     CellphoneAPIView,
-#     )
+from .views import (
+    ProductCartItemListView,
+    ProductCartItemCreateView,
+    )
 
 urlpatterns = [
-    # path('recommends/', RecommendsAPIView.as_view(), name='recommends'),
-    # path('loadmore/', LoadMoreAPIView.as_view(), name='loadmore'),
+    path('', ProductCartItemListView.as_view(), name='cart-list'),
+    path('add/', ProductCartItemCreateView.as_view(), name='cart-add'),
     # path('cellphone/', CellphoneAPIView.as_view(), name='cellphone'),
     # # 以下分类标签数据接口和手机几乎一样，暂时不用做
     # path('Intelligence//', RecommendsAPIView.as_view(), name='Intelligence'),

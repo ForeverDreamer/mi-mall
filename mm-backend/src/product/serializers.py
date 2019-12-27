@@ -29,6 +29,7 @@ class SkuListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sku
         fields = [
+            'id',
             'version',
             'color',
             'cover_img',
