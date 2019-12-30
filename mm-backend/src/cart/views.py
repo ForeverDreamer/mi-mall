@@ -1,9 +1,20 @@
 from django.contrib.auth import get_user_model
+# from django.core.exceptions import Do
 
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.exceptions import NotFound
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
+from product.models import Product
 from .models import ProductCartItem, Sku
-from .serializers import ProductCartItemListSerializer, ProductCartItemCreateSerializer
+from product.serializers import SkuListSerializer
+from .serializers import (
+    ProductCartItemSerializer,
+    ProductCartItemCreateSerializer,
+    ProductCartItemMutiDeleteSerializer,
+)
+from mm.exceptions import ParameterError
 from .exceptions import InventoryShortage
 
 User = get_user_model()
@@ -12,7 +23,7 @@ User = get_user_model()
 # 获取购物车商品列表
 class ProductCartItemListView(generics.ListAPIView):
     queryset = ProductCartItem.objects.all()
-    serializer_class = ProductCartItemListSerializer
+    serializer_class = ProductCartItemSerializer
 
 
 # 加入购物车
@@ -36,3 +47,54 @@ class ProductCartItemCreateView(generics.CreateAPIView):
         # else:
         #     serializer.save()
         serializer.save()
+
+
+# 获取单个产品的sku列表
+class ProductSkuListView(generics.ListAPIView):
+    serializer_class = SkuListSerializer
+
+    def get_queryset(self):
+        product_id = self.request.query_params.get('product_id')
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            raise NotFound()
+        return product.sku_set.all()
+
+
+# 修改购物车商品数量(单个)
+class ProductCartItemUpdateView(generics.UpdateAPIView):
+    serializer_class = ProductCartItemSerializer
+
+    def get_queryset(self):
+        admin = User.objects.all().first()
+        qs = admin.cart.items.all()
+        return qs
+
+
+# 删除购物车商品(多个)
+class ProductCartItemMutiDeleteView(APIView):
+    def delete(self, *args, **kwargs):
+        serializer = ProductCartItemMutiDeleteSerializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
+        items = serializer.validated_data.get('items')
+        admin = User.objects.all().first()
+        item_list = admin.cart.items.all()
+        item_id_list = item_list.values_list('id')
+        item_id_list = [item_id[0] for item_id in item_id_list]
+        for item in items:
+            if item not in item_id_list:
+                raise ParameterError(detail="商品id:{}不在购物车中".format(item))
+        for item in item_list:
+            item.delete()
+        return Response({"msg": "删除成功！"}, status=status.HTTP_200_OK)
+
+
+# 删除购物车商品(单个)
+class ProductCartItemSingleDeleteView(generics.DestroyAPIView):
+    serializer_class = ProductCartItemMutiDeleteSerializer
+
+    def get_queryset(self):
+        admin = User.objects.all().first()
+        qs = admin.cart.items.all()
+        return qs

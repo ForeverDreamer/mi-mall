@@ -1,15 +1,21 @@
+from django.contrib.auth import get_user_model
+
 from rest_framework import serializers
 
 from product.models import Sku
 from .models import ProductCartItem
 
+User = get_user_model()
+
 
 class CartItemSkuDetailSerializer(serializers.ModelSerializer):
+    product_id = serializers.CharField(source='product.id', read_only=True)
     product_title = serializers.CharField(source='product.title', read_only=True)
 
     class Meta:
         model = Sku
         fields = [
+            'product_id',
             'product_title',
             'version',
             'color',
@@ -19,7 +25,7 @@ class CartItemSkuDetailSerializer(serializers.ModelSerializer):
         ]
 
 
-class ProductCartItemListSerializer(serializers.ModelSerializer):
+class ProductCartItemSerializer(serializers.ModelSerializer):
     sku = CartItemSkuDetailSerializer(read_only=True)
 
     class Meta:
@@ -29,6 +35,7 @@ class ProductCartItemListSerializer(serializers.ModelSerializer):
             'sku',
             'purchase_num',
         ]
+        read_only_fields = ['id']
 
 
 class ProductCartItemCreateSerializer(serializers.ModelSerializer):
@@ -39,3 +46,7 @@ class ProductCartItemCreateSerializer(serializers.ModelSerializer):
             'sku',
             'purchase_num',
         ]
+
+
+class ProductCartItemMutiDeleteSerializer(serializers.Serializer):
+    items = serializers.ListField(child=serializers.IntegerField())

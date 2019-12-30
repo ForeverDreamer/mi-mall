@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import ShippingAddress
+from .models import ShippingAddress, Coupon, ReceiveCoupon, Order
 
 
 class ShippingAddressListCreateSerializer(serializers.ModelSerializer):
@@ -36,3 +36,52 @@ class ShippingAddressUpdateSerializer(serializers.ModelSerializer):
             'is_default',
         ]
         extra_kwargs = {'id': {'read_only': True}}
+
+
+class CouponListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Coupon
+        fields = [
+            'id',
+            'title',
+            'desc',
+            'discount_amount',
+            'expense_amount',
+            'limit_num',
+            'start_time',
+            'end_time',
+        ]
+
+
+class ReceiveCouponCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReceiveCoupon
+        fields = [
+            'id',
+            'owner',
+            'coupon',
+        ]
+        extra_kwargs = {'id': {'read_only': True}}
+
+
+class ReceiveCouponListSerializer(serializers.ModelSerializer):
+    coupon = CouponListSerializer(read_only=True)
+
+    class Meta:
+        model = ReceiveCoupon
+        fields = [
+            'coupon',
+        ]
+
+
+class OrderCreateSerializer(serializers.ModelSerializer):
+    skus = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+
+    class Meta:
+        model = Order
+        fields = [
+            'skus',
+            'coupon',
+            'shipping_address',
+            'invoice',
+        ]
