@@ -44,13 +44,32 @@ ADDR_TAG = (
 ORDER_STATUS = (
     ('unpaid', '待付款'),
     ('paid', '已付款'),
+    ('shipping', '发货'),
+    ('received', '已收货'),
+    ('refund', '退款'),
+)
+
+SHIPPING_STATUS = (
+    ('pending', '打包中'),
     ('shipped', '已发货'),
     ('received', '已收货'),
+)
+
+REFUND_STATUS = (
+    ('applied', '申请退款'),
+    ('processing', '退款中'),
+    ('success', '退款成功'),
+    ('fail', '退款失败'),
 )
 
 INVOICE_TYPE = (
     ('individual', '个人'),
     ('company', '公司'),
+)
+
+PAY_METHOD = (
+    ('wechat', '微信'),
+    ('alipay', '支付宝'),
 )
 
 
@@ -148,6 +167,13 @@ class ReceiveCoupon(models.Model):
         return '{}_{}'.format(self.owner.username, self.coupon.title)
 
 
+# 用户评价
+class Review(models.Model):
+    comment = models.TextField()
+    rating = models.DecimalField(decimal_places=1, max_digits=1)
+    active = models.BooleanField(default=True)
+
+
 class OrderQuerySet(models.query.QuerySet):
     def active(self):
         return self.filter(active=True)
@@ -163,8 +189,9 @@ class OrderManager(models.Manager):
 
 # 订单
 class Order(models.Model):
+    # 调用订单唯一流水号生成函数
+    order_no = models.CharField(max_length=50)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    status = models.CharField(max_length=10, choices=ORDER_STATUS, default=ORDER_STATUS[0][0])
     skus = models.ManyToManyField(Sku)
     coupon = models.ForeignKey(Coupon, on_delete=models.PROTECT)
     # 商品总价
@@ -173,6 +200,14 @@ class Order(models.Model):
     transport_costs = models.DecimalField(decimal_places=2, max_digits=10)
     shipping_address = models.ForeignKey(ShippingAddress, on_delete=models.PROTECT)
     invoice = models.CharField(max_length=10, choices=INVOICE_TYPE)
+    status = models.CharField(max_length=10, choices=ORDER_STATUS, default=ORDER_STATUS[0][0])
+    pay_method = models.CharField(max_length=10, choices=PAY_METHOD)
+    pay_time = models.DateTimeField()
+    pay_no = models.CharField(max_length=50)
+    remark = models.CharField(max_length=100, blank=True)  # 订单备注
+    review = models.ForeignKey(Review, null=True, on_delete=models.PROTECT)
+    # 订单创建后一定时间内还未付款就关闭，恢复商品库存，优惠券等数据，使用定时任务
+    closed = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
     update_time = models.DateTimeField(auto_now=True)
     create_time = models.DateTimeField(auto_now_add=True)
@@ -185,3 +220,21 @@ class Order(models.Model):
 
     def __str__(self):
         return '{}_{}'.format(self.owner.username, self.status)
+
+
+# 退款信息
+class Refund(models.Model):
+    refund_no = models.CharField(max_length=50)
+    status = models.CharField(max_length=10, choices=REFUND_STATUS)
+    review = models.ForeignKey(Review, null=True, on_delete=models.PROTECT)
+    active = models.BooleanField(default=True)
+
+
+# 物流信息
+class Shipping(models.Model):
+    shipping_no = models.CharField(max_length=50)
+    status = models.CharField(max_length=10, choices=SHIPPING_STATUS)
+    review = models.ForeignKey(Review, null=True, on_delete=models.PROTECT)
+    active = models.BooleanField(default=True)
+
+

@@ -23,6 +23,7 @@ urlpatterns = [
     path('product/', include(('product.urls', 'product'), namespace='product')),
     path('cart/', include(('cart.urls', 'cart'), namespace='cart')),
     path('order/', include(('order.urls', 'order'), namespace='order')),
+    path('pay/', include(('pay.urls', 'pay'), namespace='pay')),
 ]
 
 if settings.DEBUG:

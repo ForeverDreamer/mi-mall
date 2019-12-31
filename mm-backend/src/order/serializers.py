@@ -85,3 +85,4 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             'shipping_address',
             'invoice',
         ]
+        extra_kwargs = {'coupon': {'required': False}}
