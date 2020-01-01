@@ -7,9 +7,11 @@ from .views import (
     CouponReceiveAPIView,
     CouponReceiveListAPIView,
     OrderCreateAPIView,
+    OrderListAPIView,
     )
 
 urlpatterns = [
+    path('list/', OrderListAPIView.as_view(), name='list'),
     path('shippingaddress/', ShippingAddressListCreateAPIView.as_view(), name='shippingaddress-listcreate'),
     path('shippingaddress/<str:pk>/', ShippingAddressUpdateDeleteAPIView.as_view(), name='shippingaddress-detail'),
     path('settlement/', OrderCreateAPIView.as_view(), name='settlement'),

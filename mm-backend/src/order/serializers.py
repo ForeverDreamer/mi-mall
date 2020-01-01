@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import ShippingAddress, Coupon, ReceiveCoupon, Order
+from .models import ShippingAddress, Coupon, ReceiveCoupon, Order, OrderItem
+from  product.serializers import SkuListSerializer
 
 
 class ShippingAddressListCreateSerializer(serializers.ModelSerializer):
@@ -74,13 +75,38 @@ class ReceiveCouponListSerializer(serializers.ModelSerializer):
         ]
 
 
-class OrderCreateSerializer(serializers.ModelSerializer):
-    skus = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+class OrderItemSerializer(serializers.ModelSerializer):
+    total_price = serializers.SerializerMethodField()
+    sku = SkuListSerializer(read_only=True)
+
+    class Meta:
+        model = OrderItem
+        fields = [
+            'sku',
+            'purchase_num',
+            'sale_price',
+            'total_price',
+        ]
+
+    def get_total_price(self, obj):
+        return obj.sale_price * obj.purchase_num
+
+
+class OrderListSerializer(serializers.ModelSerializer):
+    order_items = OrderItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = Order
         fields = [
-            'skus',
+            'order_no',
+            'order_items',
+        ]
+
+
+class OrderCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = [
             'coupon',
             'shipping_address',
             'invoice',

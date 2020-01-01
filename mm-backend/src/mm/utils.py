@@ -1,4 +1,7 @@
 import os
+from datetime import datetime as dt
+
+from django.utils import timezone
 
 from rest_framework.views import exception_handler
 
@@ -22,3 +25,15 @@ def get_filename_ext(filepath):
     base_name = os.path.basename(filepath)
     name, ext = os.path.splitext(base_name)
     return name, ext
+
+
+def before_datetime(t):
+    if timezone.now() < t:
+        return True
+    return False
+
+
+def after_datetime(t):
+    if timezone.now() > t:
+        return True
+    return False

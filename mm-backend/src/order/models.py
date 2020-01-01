@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 from product.models import Sku
+from cart.models import ProductCartItem
 
 User = get_user_model()
 
@@ -44,8 +45,9 @@ ADDR_TAG = (
 ORDER_STATUS = (
     ('unpaid', '待付款'),
     ('paid', '已付款'),
-    ('shipping', '发货'),
-    ('received', '已收货'),
+    ('shipping', '待收货'),
+    ('received', '待评价'),
+    ('reviewed', '已评价'),
     ('refund', '退款'),
 )
 
@@ -174,6 +176,22 @@ class Review(models.Model):
     active = models.BooleanField(default=True)
 
 
+# 购买商品和数量
+class OrderItem(models.Model):
+    sku = models.ForeignKey(Sku, on_delete=models.CASCADE)
+    purchase_num = models.IntegerField()
+    sale_price = models.DecimalField(decimal_places=2, max_digits=10, default=0)
+    update_time = models.DateTimeField(auto_now=True)
+    create_time = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'OrderItem'
+        verbose_name_plural = 'OrderItems'
+
+    def __str__(self):
+        return '{}_{}_{}_{}'.format(self.id, self.sku.product.title, self.sku.version, self.sku.color)
+
+
 class OrderQuerySet(models.query.QuerySet):
     def active(self):
         return self.filter(active=True)
@@ -190,9 +208,9 @@ class OrderManager(models.Manager):
 # 订单
 class Order(models.Model):
     # 调用订单唯一流水号生成函数
-    order_no = models.CharField(max_length=50)
+    order_no = models.CharField(max_length=50, unique=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    skus = models.ManyToManyField(Sku)
+    order_items = models.ManyToManyField(OrderItem)
     coupon = models.ForeignKey(Coupon, on_delete=models.PROTECT)
     # 商品总价
     products_price = models.DecimalField(decimal_places=2, max_digits=10)
@@ -201,11 +219,11 @@ class Order(models.Model):
     shipping_address = models.ForeignKey(ShippingAddress, on_delete=models.PROTECT)
     invoice = models.CharField(max_length=10, choices=INVOICE_TYPE)
     status = models.CharField(max_length=10, choices=ORDER_STATUS, default=ORDER_STATUS[0][0])
-    pay_method = models.CharField(max_length=10, choices=PAY_METHOD)
-    pay_time = models.DateTimeField()
-    pay_no = models.CharField(max_length=50)
-    remark = models.CharField(max_length=100, blank=True)  # 订单备注
-    review = models.ForeignKey(Review, null=True, on_delete=models.PROTECT)
+    pay_method = models.CharField(max_length=10, blank=True, choices=PAY_METHOD)
+    pay_time = models.DateTimeField(null=True, blank=True)
+    pay_no = models.CharField(max_length=50, null=True, blank=True)
+    remark = models.CharField(max_length=100, null=True, blank=True)  # 订单备注
+    review = models.ForeignKey(Review, null=True, blank=True, on_delete=models.PROTECT)
     # 订单创建后一定时间内还未付款就关闭，恢复商品库存，优惠券等数据，使用定时任务
     closed = models.BooleanField(default=False)
     active = models.BooleanField(default=True)

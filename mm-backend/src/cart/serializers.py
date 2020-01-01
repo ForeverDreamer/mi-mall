@@ -15,6 +15,7 @@ class CartItemSkuDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sku
         fields = [
+            'id',
             'product_id',
             'product_title',
             'version',
