@@ -1,7 +1,13 @@
 from rest_framework import serializers
 
-from .models import ShippingAddress, Coupon, ReceiveCoupon, Order, OrderItem
-from  product.serializers import SkuListSerializer
+from .models import (
+    ShippingAddress,
+    Coupon, ReceiveCoupon,
+    Order,
+    OrderItem,
+    Refund,
+)
+from product.serializers import SkuListSerializer
 
 
 class ShippingAddressListCreateSerializer(serializers.ModelSerializer):
@@ -98,7 +104,9 @@ class OrderListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
+            'id',
             'order_no',
+            'status',
             'order_items',
         ]
 
@@ -112,3 +120,20 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             'invoice',
         ]
         extra_kwargs = {'coupon': {'required': False}}
+
+
+class OrderCancelSerializer(serializers.Serializer):
+    order_id = serializers.IntegerField(min_value=1)
+
+
+class OrderRefundSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Refund
+        fields = [
+            'order',
+            'reason',
+        ]
+
+
+class OrderConfirmReceiptSerializer(serializers.Serializer):
+    order_id = serializers.IntegerField(min_value=1)

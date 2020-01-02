@@ -1,14 +1,22 @@
 from django.contrib.auth import get_user_model
 from django.db.utils import IntegrityError
 
-from rest_framework import generics
-from rest_framework import filters
+from rest_framework import generics, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from mm.utils import before_datetime, after_datetime
 from mm.exceptions import ParameterError
-from .utils import calculate_transport_costs, get_order_no
-from .models import ShippingAddress, Coupon, ORDER_STATUS, OrderItem, Order
+from .utils import calculate_transport_costs, get_order_no, get_refund_no
+from .models import (
+    ShippingAddress,
+    Coupon,
+    OrderItem,
+    Order,
+    ORDER_STATUS,
+    REFUND_STATUS,
+)
 from .serializers import (
     ShippingAddressListCreateSerializer,
     ShippingAddressUpdateSerializer,
@@ -17,6 +25,9 @@ from .serializers import (
     ReceiveCouponListSerializer,
     OrderCreateSerializer,
     OrderListSerializer,
+    OrderCancelSerializer,
+    OrderRefundSerializer,
+    OrderConfirmReceiptSerializer,
 )
 
 User = get_user_model()
@@ -146,9 +157,64 @@ class OrderCreateAPIView(generics.CreateAPIView):
         #     raise ParameterError(detail='IntegrityError')
 
 
+# 订单列表
 class OrderListAPIView(generics.ListAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderListSerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['=status']
     ordering_fields = ["-update_time"]
+
+
+# 取消订单
+class OrderCancelAPIView(APIView):
+    def post(self, *args, **kwargs):
+        serializer = OrderCancelSerializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
+        order_id = serializer.validated_data.get('order_id')
+        qs = Order.objects.by_id(order_id)
+        if not qs.exists():
+            raise ParameterError(detail='订单不存在')
+        order = qs.first()
+        if order.status != ORDER_STATUS[0][0]:
+            raise ParameterError(detail='订单状态不支持此操作，status: {}'.format(order.status))
+        order.active = False
+        order.save()
+        # 恢复商品库存数量
+        # 恢复优惠券
+        return Response({'msg': '订单取消成功'}, status=status.HTTP_200_OK)
+
+
+# 申请退款
+class OrderRefundAPIView(APIView):
+    def post(self, *args, **kwargs):
+        serializer = OrderRefundSerializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
+        order = serializer.validated_data.get('order')
+        if order.status != ORDER_STATUS[1][0]:
+            raise ParameterError(detail='订单状态不支持此操作，status: {}'.format(order.status))
+        order.status = ORDER_STATUS[5][0]
+        order.save()
+        refund = serializer.save()
+        refund.refund_no = get_refund_no()
+        refund.status = REFUND_STATUS[0][0]
+        refund.save()
+        # 客服跟进处理审核，通知支付平台退款
+        return Response({'msg': '申请退款成功'}, status=status.HTTP_200_OK)
+
+
+# 确认收货
+class OrderConfirmReceiptAPIView(APIView):
+    def post(self, *args, **kwargs):
+        serializer = OrderConfirmReceiptSerializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
+        order_id = serializer.validated_data.get('order_id')
+        qs = Order.objects.by_id(order_id)
+        if not qs.exists():
+            raise ParameterError(detail='订单不存在')
+        order = qs.first()
+        if order.status != ORDER_STATUS[2][0]:
+            raise ParameterError(detail='订单状态不支持此操作，status: {}'.format(order.status))
+        order.status = ORDER_STATUS[3][0]
+        order.save()
+        return Response({'msg': '确认收货成功'}, status=status.HTTP_200_OK)

@@ -10,5 +10,12 @@ def calculate_transport_costs(products_price):
 
 
 def get_order_no():
-    order_no = str(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))) + str(time.time()).replace('.', '')[-7:]
+    order_no = 'order_' + str(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))) \
+               + str(time.time()).replace('.', '')[-7:]
     return order_no
+
+
+def get_refund_no():
+    refund_no = 'refund_' + str(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))) \
+                + str(time.time()).replace('.', '')[-7:]
+    return refund_no

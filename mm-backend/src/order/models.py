@@ -51,11 +51,11 @@ ORDER_STATUS = (
     ('refund', '退款'),
 )
 
-SHIPPING_STATUS = (
-    ('pending', '打包中'),
-    ('shipped', '已发货'),
-    ('received', '已收货'),
-)
+# SHIPPING_STATUS = (
+#     ('pending', '打包中'),
+#     ('shipped', '已发货'),
+#     ('received', '已收货'),
+# )
 
 REFUND_STATUS = (
     ('applied', '申请退款'),
@@ -169,13 +169,6 @@ class ReceiveCoupon(models.Model):
         return '{}_{}'.format(self.owner.username, self.coupon.title)
 
 
-# 用户评价
-class Review(models.Model):
-    comment = models.TextField()
-    rating = models.DecimalField(decimal_places=1, max_digits=1)
-    active = models.BooleanField(default=True)
-
-
 # 购买商品和数量
 class OrderItem(models.Model):
     sku = models.ForeignKey(Sku, on_delete=models.CASCADE)
@@ -204,6 +197,9 @@ class OrderManager(models.Manager):
     def all(self):
         return self.get_queryset().active()
 
+    def by_id(self, order_id):
+        return self.all().filter(id=order_id)
+
 
 # 订单
 class Order(models.Model):
@@ -223,9 +219,8 @@ class Order(models.Model):
     pay_time = models.DateTimeField(null=True, blank=True)
     pay_no = models.CharField(max_length=50, null=True, blank=True)
     remark = models.CharField(max_length=100, null=True, blank=True)  # 订单备注
-    review = models.ForeignKey(Review, null=True, blank=True, on_delete=models.PROTECT)
     # 订单创建后一定时间内还未付款就关闭，恢复商品库存，优惠券等数据，使用定时任务
-    closed = models.BooleanField(default=False)
+    # closed = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
     update_time = models.DateTimeField(auto_now=True)
     create_time = models.DateTimeField(auto_now_add=True)
@@ -240,19 +235,67 @@ class Order(models.Model):
         return '{}_{}'.format(self.owner.username, self.status)
 
 
+# 订单评价
+class OrderReview(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    comment = models.TextField()
+    rating = models.DecimalField(decimal_places=1, max_digits=1)
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'OrderReview'
+        verbose_name_plural = 'OrderReviews'
+
+
 # 退款信息
 class Refund(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     refund_no = models.CharField(max_length=50)
+    reason = models.CharField(max_length=50, blank=True)
     status = models.CharField(max_length=10, choices=REFUND_STATUS)
-    review = models.ForeignKey(Review, null=True, on_delete=models.PROTECT)
     active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'Refund'
+        verbose_name_plural = 'Refunds'
+
+    def __str__(self):
+        return '{}_{}'.format(self.refund_no, self.status)
+
+
+# 退款评价
+class RefundReview(models.Model):
+    refund = models.ForeignKey(Refund, on_delete=models.CASCADE)
+    comment = models.TextField()
+    rating = models.DecimalField(decimal_places=1, max_digits=1)
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'RefundReview'
+        verbose_name_plural = 'RefundReviews'
 
 
 # 物流信息
 class Shipping(models.Model):
-    shipping_no = models.CharField(max_length=50)
-    status = models.CharField(max_length=10, choices=SHIPPING_STATUS)
-    review = models.ForeignKey(Review, null=True, on_delete=models.PROTECT)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    express_company = models.CharField(max_length=20)
+    # 第三方物流平台快递单号
+    express_no = models.CharField(max_length=50)
+    # status = models.CharField(max_length=10, choices=SHIPPING_STATUS)
     active = models.BooleanField(default=True)
 
+    class Meta:
+        verbose_name = 'Shipping'
+        verbose_name_plural = 'Shippings'
 
+
+# 物流评价
+class ShippingReview(models.Model):
+    shipping = models.ForeignKey(Shipping, on_delete=models.CASCADE)
+    comment = models.TextField()
+    rating = models.DecimalField(decimal_places=1, max_digits=1)
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'ShippingReview'
+        verbose_name_plural = 'ShippingReviews'
