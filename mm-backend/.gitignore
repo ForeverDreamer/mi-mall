@@ -5,6 +5,7 @@ __pycache__
 .pytest_cache
 temp/
 static_in_env/
+log/
 
 # pycharm proj conf
 .idea

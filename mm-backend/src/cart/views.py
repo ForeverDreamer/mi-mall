@@ -1,3 +1,6 @@
+import logging
+
+from django.conf import settings
 from django.contrib.auth import get_user_model
 # from django.core.exceptions import Do
 
@@ -18,6 +21,8 @@ from mm.exceptions import ParameterError
 from .exceptions import InventoryShortage
 
 User = get_user_model()
+LOGGER_NAME = '{}.{}'.format(settings.PROJECT_NAME, __name__)
+logger = logging.getLogger(LOGGER_NAME)
 
 
 # 获取购物车商品列表
@@ -34,6 +39,7 @@ class ProductCartItemCreateView(generics.CreateAPIView):
         sku = serializer.validated_data.get('sku')
         # 检测库存数量
         if sku.inventory < 1:
+            logger.error('库存不足')
             raise InventoryShortage()
         # 已加入购物车则数量加1(不需要这么做，OneToOneField不允许重复创建，让客户端调用修改数量接口)
         # admin = User.objects.all().first()
@@ -84,7 +90,9 @@ class ProductCartItemMutiDeleteView(APIView):
         item_id_list = [item_id[0] for item_id in item_id_list]
         for item in items:
             if item not in item_id_list:
-                raise ParameterError(detail="商品id:{}不在购物车中".format(item))
+                error_msg = "商品id:{}不在购物车中".format(item)
+                logger.error(error_msg)
+                raise ParameterError(detail=error_msg)
         for item in item_list:
             item.delete()
         return Response({"msg": "删除成功！"}, status=status.HTTP_200_OK)
@@ -92,8 +100,6 @@ class ProductCartItemMutiDeleteView(APIView):
 
 # 删除购物车商品(单个)
 class ProductCartItemSingleDeleteView(generics.DestroyAPIView):
-    serializer_class = ProductCartItemMutiDeleteSerializer
-
     def get_queryset(self):
         admin = User.objects.all().first()
         qs = admin.cart.items.all()

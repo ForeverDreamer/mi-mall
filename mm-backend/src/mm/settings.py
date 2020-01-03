@@ -147,3 +147,40 @@ REST_FRAMEWORK = {
     'SEARCH_PARAM': 'q',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {pathname} {funcName} {lineno} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), "log", "mm.log"),
+            'formatter': 'verbose'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+        },
+    },
+    'loggers': {
+        'mm': {
+            'handlers': ['file', 'mail_admins'],
+            # 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
+
+PROJECT_NAME = 'mm'

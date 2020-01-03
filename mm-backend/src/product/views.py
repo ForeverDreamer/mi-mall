@@ -1,3 +1,7 @@
+import logging
+
+from django.conf import settings
+
 from rest_framework import generics, permissions
 from rest_framework.views import APIView
 from rest_framework.parsers import FileUploadParser
@@ -8,6 +12,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import FirstCategory, AdProduct, ThemeActivity, Product, SecondCategory
 from .serializers import ProductListSerializer
+
+LOGGER_NAME = '{}.{}'.format(settings.PROJECT_NAME, __name__)
+logger = logging.getLogger(LOGGER_NAME)
 
 
 class RecommendsAPIView(APIView):
