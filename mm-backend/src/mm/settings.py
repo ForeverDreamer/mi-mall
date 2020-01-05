@@ -161,12 +161,29 @@ LOGGING = {
             'style': '{',
         },
     },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
     'handlers': {
-        'file': {
+        'mm_file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': os.path.join(os.path.dirname(BASE_DIR), "log", "mm.log"),
             'formatter': 'verbose'
+        },
+        'django_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), "log", "django.log"),
+            'formatter': 'simple'
+        },
+        'django_console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
         },
         'mail_admins': {
             'level': 'ERROR',
@@ -175,9 +192,14 @@ LOGGING = {
     },
     'loggers': {
         'mm': {
-            'handlers': ['file', 'mail_admins'],
+            'handlers': ['mm_file', 'mail_admins'],
             # 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             'level': 'ERROR',
+            'propagate': True,
+        },
+        'django': {
+            'handlers': ['django_file', 'django_console', 'mail_admins'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             'propagate': True,
         },
     },
