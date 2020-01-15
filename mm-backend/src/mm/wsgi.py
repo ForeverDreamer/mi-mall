@@ -8,6 +8,9 @@ https://docs.djangoproject.com/en/2.2/howto/deployment/wsgi/
 """
 
 import os
+# for docker
+# import sys
+# sys.path.append('/app/src/')
 
 from django.core.wsgi import get_wsgi_application
 

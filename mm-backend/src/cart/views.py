@@ -39,7 +39,7 @@ class ProductCartItemCreateView(generics.CreateAPIView):
         sku = serializer.validated_data.get('sku')
         # 检测库存数量
         if sku.inventory < 1:
-            logger.error('库存不足')
+            # logger.error('库存不足')
             raise InventoryShortage()
         # 已加入购物车则数量加1(不需要这么做，OneToOneField不允许重复创建，让客户端调用修改数量接口)
         # admin = User.objects.all().first()

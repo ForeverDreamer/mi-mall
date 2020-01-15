@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -x
+set -eo pipefail
+
+echo "==================="
+echo "doer_lee pre-buid"

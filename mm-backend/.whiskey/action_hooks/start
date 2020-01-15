@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -x
+set -eo pipefail
+
+python manage.py runmodwsgi --reload-on-changes
+echo "==================="
+echo "doer_lee start"
