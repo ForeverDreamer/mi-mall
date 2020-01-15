@@ -160,7 +160,7 @@ LOGGING = {
             'style': '{',
         },
         'simple': {
-            'format': '{levelname} {message}',
+            'format': '{levelname} {asctime} {funcName} {lineno} {message}',
             'style': '{',
         },
     },
@@ -171,13 +171,13 @@ LOGGING = {
     },
     'handlers': {
         'mm_file': {
-            'level': 'DEBUG',
+            'level': 'WARNING',
             'class': 'logging.FileHandler',
             'filename': os.path.join(os.path.dirname(BASE_DIR), "log", "mm.log"),
             'formatter': 'verbose'
         },
         'django_file': {
-            'level': 'DEBUG',
+            'level': 'WARNING',
             'class': 'logging.FileHandler',
             'filename': os.path.join(os.path.dirname(BASE_DIR), "log", "django.log"),
             'formatter': 'simple'
@@ -197,12 +197,13 @@ LOGGING = {
         'mm': {
             'handlers': ['mm_file', 'mail_admins'],
             # 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-            'level': 'ERROR',
+            'level': 'WARNING',
             'propagate': True,
         },
         'django': {
             'handlers': ['django_file', 'django_console', 'mail_admins'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'level': 'WARNING',
+            # 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             'propagate': True,
         },
     },

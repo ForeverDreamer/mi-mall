@@ -8,6 +8,4 @@ COPY requirements.txt /app
 
 RUN pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 
-COPY . /app
-
 ENTRYPOINT [ "mod_wsgi-docker-start" ]

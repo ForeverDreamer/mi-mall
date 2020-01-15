@@ -1,6 +1,6 @@
 FROM doerlee/mod_wsgi
 
-COPY . .
+COPY . /app
 
 EXPOSE 80
 
