@@ -4,10 +4,12 @@ services:
   db:
     image: mysql:5.7
     ports:
-      - '3306:3306'
+      - '3306'
     environment:
       MYSQL_DATABASE: 'mmdb'
       MYSQL_ROOT_PASSWORD: 'MyNewPass4!'
+    volumes:
+      - "~/data:/var/lib/mysql"
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
   web:
     build:
@@ -17,7 +19,16 @@ services:
       PYTHONPATH: '/app/src/'
     volumes:
       - "./log:/app/log"
-    command: src/mm/wsgi.py --https-port 443 --https-only --server-name crawleruniverse.com --ssl-certificate-file ./letsencrypt/live/crawleruniverse.com/cert.pem --ssl-certificate-key-file ./letsencrypt/live/crawleruniverse.com/privkey.pem --ssl-certificate-chain-file ./letsencrypt/live/crawleruniverse.com/fullchain.pem --port 8080
+    command: ["src/mm/wsgi.py",
+              "--https-port", "443",
+              "--https-only",
+              "--server-name", "crawleruniverse.com",
+              "--ssl-certificate-file", "./letsencrypt/live/crawleruniverse.com/cert.pem",
+              "--ssl-certificate-key-file", "./letsencrypt/live/crawleruniverse.com/privkey.pem",
+              "--ssl-certificate-chain-file", "./letsencrypt/live/crawleruniverse.com/fullchain.pem",
+              "--ssl-ca-certificate-file", "./letsencrypt/live/crawleruniverse.com/cert.pem",
+              "--ssl-verify-client", "/admin/",
+              "--port", "8080"]
     ports:
       - "8080:8080"
       - "443:443"
