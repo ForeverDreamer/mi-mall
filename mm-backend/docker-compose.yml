@@ -15,7 +15,11 @@ services:
       dockerfile: Dockerfile
     environment:
       PYTHONPATH: '/app/src/'
+    volumes:
+      - "./log:/app/log"
+    command: src/mm/wsgi.py --https-port 443 --https-only --server-name crawleruniverse.com --ssl-certificate-file ./letsencrypt/live/crawleruniverse.com/cert.pem --ssl-certificate-key-file ./letsencrypt/live/crawleruniverse.com/privkey.pem --ssl-certificate-chain-file ./letsencrypt/live/crawleruniverse.com/fullchain.pem --port 8080
     ports:
-      - "80:80"
+      - "8080:8080"
+      - "443:443"
     depends_on:
       - db
