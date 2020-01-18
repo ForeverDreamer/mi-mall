@@ -4,6 +4,10 @@ WORKDIR /app
 
 RUN mod_wsgi-docker-build
 
+# COPY build.sh /app
+
+# RUN ./build.sh
+
 COPY requirements.txt /app
 
 RUN pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/

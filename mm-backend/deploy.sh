@@ -4,6 +4,10 @@ set -x
 
 set -eo pipefail
 
-mkdir static_in_env
+if [[ ! -d static_in_env ]]; then
+    mkdir static_in_env
+fi
 
-python src/manage.py collectstatic
+if [[ ! -d log ]]; then
+    mkdir log && touch log/django.log log/mm.log && chmod -R 777 log
+fi

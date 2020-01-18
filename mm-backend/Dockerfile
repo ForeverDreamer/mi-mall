@@ -2,4 +2,4 @@ FROM doerlee/mod_wsgi
 
 COPY . /app
 
-RUN ./deploy.sh
+RUN python src/manage.py collectstatic
