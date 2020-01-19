@@ -1,14 +1,10 @@
 version: '3.7'
 
 services:
-  cached:
-    image: memcached
-    ports:
-      - '11211'
+  cache_db:
+    image: redis
   db:
     image: mysql:5.7
-    ports:
-      - '3306'
     environment:
       MYSQL_DATABASE: 'mmdb'
       MYSQL_ROOT_PASSWORD: 'MyNewPass4!'
@@ -17,12 +13,12 @@ services:
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
   web:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/Dockerfile
     environment:
       PYTHONPATH: '/app/src/'
     volumes:
-      - "./log:/app/log"
+      - "../log:/app/log"
     command: ["src/mm/wsgi.py",
               "--https-port", "443",
               "--https-only",
@@ -38,4 +34,4 @@ services:
       - "443:443"
     depends_on:
       - db
-      - cached
+      - cache_db

@@ -2,7 +2,7 @@ FROM grahamdumpleton/mod-wsgi-docker:python-3.5
 
 WORKDIR /app
 
-RUN mod_wsgi-docker-build
+# RUN mod_wsgi-docker-build
 
 # COPY build.sh /app
 

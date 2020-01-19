@@ -1,6 +1,7 @@
 import logging
 
 from django.conf import settings
+from django.core.cache import cache
 
 from rest_framework import generics, permissions
 from rest_framework.views import APIView
