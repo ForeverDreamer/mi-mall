@@ -137,10 +137,14 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "media_roo
 CACHES = {
     'default': {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://cache_db:6379/1",
+        "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
+    },
+    'file': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(os.path.dirname(BASE_DIR), 'temp'),
     }
 }
 
@@ -170,7 +174,7 @@ LOGGING = {
             'style': '{',
         },
         'simple': {
-            'format': '{levelname} {asctime} {funcName} {lineno} {message}',
+            'format': '{levelname} {asctime} {pathname} {funcName} {lineno} {message}',
             'style': '{',
         },
     },
@@ -182,14 +186,20 @@ LOGGING = {
     'handlers': {
         'mm_file': {
             'level': 'WARNING',
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(os.path.dirname(BASE_DIR), "log", "mm.log"),
+            'maxBytes': 1024*1024*5,
+            'backupCount': 5,
+            'delay': True,
             'formatter': 'verbose'
         },
         'django_file': {
             'level': 'WARNING',
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(os.path.dirname(BASE_DIR), "log", "django.log"),
+            'maxBytes': 1024*1024*5,
+            'backupCount': 5,
+            'delay': True,
             'formatter': 'simple'
         },
         'django_console': {
@@ -212,7 +222,7 @@ LOGGING = {
         },
         'django': {
             'handlers': ['django_file', 'django_console', 'mail_admins'],
-            'level': 'WARNING',
+            'level': 'ERROR',
             # 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             'propagate': True,
         },

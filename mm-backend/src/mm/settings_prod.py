@@ -20,12 +20,25 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'kp5@jf0@ymz9yi9md@2f+s3@gqc34@^%zc-5nxpaqfge5fiy$j'
+with open(os.path.join(BASE_DIR, 'mm/secret_key.txt')) as f:
+    SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_SECURE = True
+
+# SERVER_EMAIL = 'root@localhost'
+#
+# ADMINS = [('admin', '499361328@qq.com')]
+
+# MANAGERS = [('admin', '499361328@qq.com')]
+
+ALLOWED_HOSTS = ['.itman.icu']
+
+PROJECT_NAME = 'mm'
 
 
 # Application definition
@@ -55,7 +68,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django.middleware.common.BrokenLinkEmailsMiddleware',
 ]
+
+# import re
+#
+# IGNORABLE_404_URLS = [
+#     re.compile(r'^/apple-touch-icon.*\.png$'),
+#     re.compile(r'^/favicon\.ico$'),
+#     re.compile(r'^/robots\.txt$'),
+# ]
 
 ROOT_URLCONF = 'mm.urls'
 
@@ -162,6 +184,8 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
 
+# DEFAULT_FROM_EMAIL = 'webmaster@localhost'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -171,7 +195,7 @@ LOGGING = {
             'style': '{',
         },
         'simple': {
-            'format': '{levelname} {asctime} {funcName} {lineno} {message}',
+            'format': '{levelname} {asctime} {pathname} {funcName} {lineno} {message}',
             'style': '{',
         },
     },
@@ -183,14 +207,20 @@ LOGGING = {
     'handlers': {
         'mm_file': {
             'level': 'WARNING',
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(os.path.dirname(BASE_DIR), "log", "mm.log"),
+            'maxBytes': 1024*1024*5,
+            'backupCount': 5,
+            'delay': True,
             'formatter': 'verbose'
         },
         'django_file': {
             'level': 'WARNING',
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(os.path.dirname(BASE_DIR), "log", "django.log"),
+            'maxBytes': 1024*1024*5,
+            'backupCount': 5,
+            'delay': True,
             'formatter': 'simple'
         },
         'django_console': {
@@ -213,11 +243,9 @@ LOGGING = {
         },
         'django': {
             'handlers': ['django_file', 'django_console', 'mail_admins'],
-            'level': 'WARNING',
+            'level': 'ERROR',
             # 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             'propagate': True,
         },
     },
 }
-
-PROJECT_NAME = 'mm'

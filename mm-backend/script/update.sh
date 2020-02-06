@@ -16,6 +16,10 @@ fi
 
 cp -R mm-backend ${HOME}
 
+if [[ ! -d '/etc/letsencrypt/' ]]; then
+    . ssl_request.sh
+fi
+
 cd ${HOME}/mm-backend/docker
 
 if [[ $1 = 'http' ]]; then
@@ -26,7 +30,7 @@ fi
 cd ../src/mm
 
 mv settings.py settings_debug.py
-mv settings_prod settings.py
+mv settings_prod.py settings.py
 
 cd ${HOME}/mm-backend/script
 

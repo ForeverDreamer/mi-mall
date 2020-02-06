@@ -22,11 +22,11 @@ services:
     command: ["src/mm/wsgi.py",
               "--https-port", "443",
               "--https-only",
-              "--server-name", "crawleruniverse.com",
-              "--ssl-certificate-file", "./letsencrypt/live/crawleruniverse.com/cert.pem",
-              "--ssl-certificate-key-file", "./letsencrypt/live/crawleruniverse.com/privkey.pem",
-              "--ssl-certificate-chain-file", "./letsencrypt/live/crawleruniverse.com/fullchain.pem",
-              "--ssl-ca-certificate-file", "./letsencrypt/live/crawleruniverse.com/cert.pem",
+              "--server-name", "itman.icu",
+              "--ssl-certificate-file", "./letsencrypt/live/itman.icu/cert.pem",
+              "--ssl-certificate-key-file", "./letsencrypt/live/itman.icu/privkey.pem",
+              "--ssl-certificate-chain-file", "./letsencrypt/live/itman.icu/fullchain.pem",
+              "--ssl-ca-certificate-file", "./letsencrypt/live/itman.icu/cert.pem",
               "--ssl-verify-client", "/admin/",
               "--port", "8080"]
     ports:
