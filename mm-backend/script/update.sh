@@ -17,7 +17,10 @@ fi
 cp -R mm-backend ${HOME}
 
 if [[ ! -d '/etc/letsencrypt/' ]]; then
-    . ssl_request.sh
+    . ${HOME}/ssl_request.sh
+else
+    sudo cp -R /etc/letsencrypt/ ${HOME}/mm-backend
+    sudo chown -R $USER:$USER ${HOME}/mm-backend/letsencrypt
 fi
 
 cd ${HOME}/mm-backend/docker

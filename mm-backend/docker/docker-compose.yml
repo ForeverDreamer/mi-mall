@@ -19,6 +19,7 @@ services:
       PYTHONPATH: '/app/src/'
     volumes:
       - "../log:/app/log"
+      # - "../static_in_env:/app/static_in_env/"
     command: ["src/mm/wsgi.py",
               "--https-port", "443",
               "--https-only",
@@ -28,6 +29,9 @@ services:
               "--ssl-certificate-chain-file", "./letsencrypt/live/itman.icu/fullchain.pem",
               "--ssl-ca-certificate-file", "./letsencrypt/live/itman.icu/cert.pem",
               "--ssl-verify-client", "/admin/",
+              # "--document-root", "/app/static_in_env/",
+              "--url-alias", "/static/", "/app/static_in_env/static_root/",
+              "--url-alias", "/media/", "/app/static_in_env/media_root/",
               "--port", "8080"]
     ports:
       - "8080:8080"
