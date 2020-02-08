@@ -4,4 +4,4 @@ COPY . /app
 
 # COPY my_conf/httpd.conf /usr/local/apache/conf
 
-RUN python src/manage.py collectstatic
+# RUN python src/manage.py collectstatic

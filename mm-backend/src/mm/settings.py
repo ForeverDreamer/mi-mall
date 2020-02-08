@@ -134,6 +134,7 @@ STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "static_r
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "media_root")
 
+
 CACHES = {
     'default': {
         "BACKEND": "django_redis.cache.RedisCache",

@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     # Third apps
     'rest_framework',
     'django_filters',
+    'django_oss_storage',
     # Local apps
     'product',
     'order',
@@ -150,12 +151,33 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
+STATICFILES_STORAGE = 'django_oss_storage.backends.OssStaticStorage'
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "static_root")
+DEFAULT_FILE_STORAGE = 'django_oss_storage.backends.OssMediaStorage'
 
+# AliCloud access key ID
+with open(os.path.join(BASE_DIR, 'mm/AccessKeyID.txt')) as f:
+    OSS_ACCESS_KEY_ID = f.read().strip()
+
+# AliCloud access key secret
+with open(os.path.join(BASE_DIR, 'mm/AccessKeySecret.txt')) as f:
+    OSS_ACCESS_KEY_SECRET = f.read().strip()
+
+OSS_EXPIRE_TIME = 30
+
+# The name of the bucket to store files in
+OSS_BUCKET_NAME = 'itman-mi-mall'
+
+# The URL of AliCloud OSS endpoint
+# Refer https://www.alibabacloud.com/help/zh/doc-detail/31837.htm for OSS Region & Endpoint
+OSS_ENDPOINT = 'oss-cn-qingdao.aliyuncs.com'
+
+# The default location for your files
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "media_root")
+
+# The default location for your static files
+STATIC_URL = '/static/'
+
 
 CACHES = {
     'default': {

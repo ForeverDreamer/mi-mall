@@ -27,11 +27,11 @@ services:
               "--ssl-certificate-file", "./letsencrypt/live/itman.icu/cert.pem",
               "--ssl-certificate-key-file", "./letsencrypt/live/itman.icu/privkey.pem",
               "--ssl-certificate-chain-file", "./letsencrypt/live/itman.icu/fullchain.pem",
-              "--ssl-ca-certificate-file", "./letsencrypt/live/itman.icu/cert.pem",
-              "--ssl-verify-client", "/admin/",
+              # "--ssl-ca-certificate-file", "./letsencrypt/live/itman.icu/cert.pem",
+              # "--ssl-verify-client", "/admin/",
               # "--document-root", "/app/static_in_env/",
-              "--url-alias", "/static/", "/app/static_in_env/static_root/",
-              "--url-alias", "/media/", "/app/static_in_env/media_root/",
+              # "--url-alias", "/static/", "/app/static_in_env/static_root/",
+              # "--url-alias", "/media/", "/app/static_in_env/media_root/",
               "--port", "8080"]
     ports:
       - "8080:8080"
