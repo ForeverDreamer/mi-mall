@@ -10,6 +10,7 @@ WORKDIR /app
 
 COPY requirements.txt /app
 
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 
 ENTRYPOINT [ "mod_wsgi-docker-start" ]

@@ -23,7 +23,7 @@ else
     sudo chown -R $USER:$USER ${HOME}/mm-backend/letsencrypt
 fi
 
-cp secret/* ${HOME}/mm-backend/src/mm/
+cp ${HOME}/secret/* ${HOME}/mm-backend/src/mm/
 
 cd ${HOME}/mm-backend/docker
 
