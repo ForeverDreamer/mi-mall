@@ -1,15 +1,133 @@
 <template>
 	<div>
-		<text>123456</text>
+		
+		<list show-scrollbar="false">
+			<cell>
+				<!-- 轮播图组件 -->
+				<sum-slider :resData="swipers" />
+				
+				<!-- 图标分类组件 -->
+				<sum-index-navs :resData="indexNavs" />
+				
+				<!-- 全局分割线 -->
+				<divider />
+				
+				<!-- 三图广告位组件 -->
+				<sum-three-adv :item="threeAdv" />
+				
+				<divider />
+				
+				<!-- 大图广告位 -->
+				<sum-one-adv :item="oneAdv" />
+				
+				<!-- 公共列表组件
+				*
+				* 间隙 5px
+				* 每列占 375px
+				*
+				* -->
+				<div class="row w-100">
+					<block v-for="(item, index) in recommendList" :key="index">
+						<common-list :item="item" :index="index"></common-list>
+					</block>
+				</div>
+			</cell>
+		</list>
+		
 	</div>
 </template>
 
 <script>
+	import sumSlider from "@/components/index/nvue/sum-slider.nvue"
+	import sumIndexNavs from "@/components/index/nvue/sum-index-navs.nvue"
+	import divider from "@/components/common/divider.nvue"
+	import sumThreeAdv from "@/components/index/nvue/sum-three-adv.nvue"
+	import sumOneAdv from "@/components/index/nvue/sum-one-adv.nvue"
+	import commonList from "@/components/common/common-list.nvue"
+	
+	const currentWebview = plus.webview.currentWebview();
+	
 	export default {
-		
+		components: {
+			sumSlider,
+			sumIndexNavs,
+			divider,
+			sumThreeAdv,
+			sumOneAdv,
+			commonList
+		},
+		data() {
+			return {
+				swipers: [
+					{src: "/static/images/demo/demo3.jpg"},
+					{src: "/static/images/demo/demo4.jpg"},
+					{src: "/static/images/demo/demo5.jpg"}
+				],
+				indexNavs: [
+					{src:"/static/images/indexnav/1.png", text:"新品分类"},
+					{src:"/static/images/indexnav/2.gif", text:"小米众筹"},
+					{src:"/static/images/indexnav/3.gif", text:"以旧换新"},
+					{src:"/static/images/indexnav/4.gif", text:"一分拼团"},
+					{src:"/static/images/indexnav/5.gif", text:"超值特卖"},
+					{src:"/static/images/indexnav/6.gif", text:"小米秒杀"},
+					{src:"/static/images/indexnav/7.gif", text:"真心想要"},
+					{src:"/static/images/indexnav/8.gif", text:"电视热卖"},
+					{src:"/static/images/indexnav/9.gif", text:"加点热卖"},
+					{src:"/static/images/indexnav/10.gif", text:"米粉卡"}
+				],
+				threeAdv: [
+					{src: "/static/images/demo/demo1.jpg"},
+					{src: "/static/images/demo/demo2.jpg"},
+					{src: "/static/images/demo/demo3.jpg"}
+				],
+				oneAdv: {
+					cover: "/static/images/demo/demo4.jpg",
+					title: "每日精选"
+				},
+				recommendList: [
+					{
+						cover:"/static/images/demo/list/1.jpg",
+						title:"米家空调",
+						desc:"1.5匹变频",
+						oprice:2699,
+						pprice:1399
+					},
+					{
+						cover:"/static/images/demo/list/1.jpg",
+						title:"米家空调",
+						desc:"1.5匹变频",
+						oprice:2699,
+						pprice:1399
+					},
+					{
+						cover:"/static/images/demo/list/1.jpg",
+						title:"米家空调",
+						desc:"1.5匹变频",
+						oprice:2699,
+						pprice:1399
+					}
+				]
+			}
+		},
+		created() {
+			// 监听当前窗口显示
+			currentWebview.addEventListener('show', e => {
+				console.log('indexShow');
+			})
+		},
+		beforeDestroy() {
+			// 移除监听事件
+			currentWebview.removeEventListener('show', e => {
+				console.log('Destroy indexShow');
+			})
+		},
+		methods: {
+			
+		}
 	}
 </script>
 
+<style src="@/common/zcm-main-nvue.css"></style>
 <style>
 
 </style>
