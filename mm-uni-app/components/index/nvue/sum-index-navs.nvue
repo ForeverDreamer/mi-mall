@@ -11,8 +11,8 @@
 		<div class="w-100 row px-2 mb-3">
 			<div class="j-center a-center mt-3 index-nav"
 			v-for="(item, index) in resData" :key="index">
-				<image :src="item.src" class="index-nav-image"></image>
-				<text class="font text-muted mt-1">{{item.text}}</text>
+				<image :src="item.cover_img" class="index-nav-image"></image>
+				<text class="font text-muted mt-1">{{item.title}}</text>
 			</div>
 		</div>
 	</div>

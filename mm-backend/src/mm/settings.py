@@ -223,7 +223,7 @@ LOGGING = {
         },
         'django': {
             'handlers': ['django_file', 'django_console', 'mail_admins'],
-            'level': 'ERROR',
+            'level': 'INFO',
             # 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             'propagate': True,
         },

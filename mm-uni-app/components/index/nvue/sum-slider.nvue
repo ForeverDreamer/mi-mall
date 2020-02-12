@@ -3,7 +3,7 @@
 		<slider auto-play="true" interval="3000" class="slider">
 			<div style="position: relative;" 
 			v-for="(item,index) in resData" :key="index">
-				<image class="image" resize="cover" :src="item.src"></image>
+				<image class="image" resize="cover" :src="item.image"></image>
 			</div>
 			<indicator class="indicator"></indicator>
 		</slider>

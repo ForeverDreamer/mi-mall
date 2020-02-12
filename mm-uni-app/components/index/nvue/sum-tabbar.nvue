@@ -8,7 +8,7 @@
 			@click="change(index)"
 			:ref="`tab${index}`">
 				<text style="height: 75px;line-height: 75px;border-bottom-width: 5px;border-style: solid;" :style="{'color':tabIndex === index? '#FD6801':'#555','border-color':tabIndex === index? '#FD6801':'#FFFFFF'}"
-				class="font-md">{{item.name}}</text>
+				class="font-md">{{item.title}}</text>
 			</div>
 		
 		</scroller>

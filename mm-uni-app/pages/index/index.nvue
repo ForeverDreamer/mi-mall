@@ -1,11 +1,11 @@
 <template>
 	<div>
 		<!-- 横向滚动顶部选项卡 -->
-		<sum-tabbar :tabBars="newsItems" :tabIndex="tabIndex" @tabchange="tabChange"></sum-tabbar>
+		<sum-tabbar :tabBars="indexData" :tabIndex="tabIndex" @tabchange="tabChange"></sum-tabbar>
 
 		<!-- 横向滚动列表 -->
 		<slider class="flex-1" :index="tabIndex" infinite="false" @change="sliderChange">
-			<list show-scrollbar="false" v-for="(item, index) in newsItems" :key="index">
+			<list show-scrollbar="false" v-for="(item, index) in indexData" :key="index">
 				<refresh class="w-100 flex-row a-center j-center"
 				@refresh="onRefresh" @pullingdown="onPullingDown" :display="refreshShow">
 					<text class="font-md text-muted">{{refreshText}}</text>
@@ -65,8 +65,10 @@
 
 	const dom = weex.requireModule('dom');
 	const currentWebview = plus.webview.currentWebview();
+	const base_url = 'http://192.168.31.124:8000/'
+	const base_media = 'http://192.168.31.124:8000/media/'
 	
-	let newsItems = [
+	let indexData = [
 		{
 			name: '关注',
 			list: [
@@ -213,7 +215,9 @@
 				loadingShow: 'hide',
 				loadText: '上拉加载更多',
 				tabIndex: 0,
-				newsItems: [],
+				indexData: [],
+				first_category_list: [],
+				carousel: []
 			};
 		},
 		created() {
@@ -231,8 +235,49 @@
 		},
 		methods: {
 			// 初始化数据
-			__init() {
-				this.newsItems = newsItems;
+			async __init() {
+				let [error, result] = await uni.request({
+					url: base_url + 'product/recommends/',
+					// url: 'https://itman.icu/product/recommends/',
+					method: 'GET'
+				})
+				if (error) {
+					return uni.showToast({
+						title: error.errMsg,
+						icon: 'none'
+					});
+				}
+				if (result.statusCode !== 200) {
+					return uni.showToast({
+						title: result.statusCode + ' ' + result.data,
+						icon: 'none'
+					})
+					
+				}
+				console.log(result.data.data)
+				const data =  result.data.data
+				// this.indexData.first_category_list = data.first_category_list
+				// for(let i of this.indexData.first_category_list){
+				// 	console.log(i.title) //打印出来的是value 2,3,5,4,2,2
+				// }
+				// this.first_category_list = data.first_category_list
+				for(let item of data.ad_product_list){
+					item.image = base_media + item.image
+					// this.carousel.push(item)
+				}
+				for(let item of data.theme_activity_list){
+					item.cover_img = base_media + item.cover_img
+					// this.carousel.push(item)
+				}
+				for(let item of data.first_category_list){
+					item.list = []
+					item.list.push({ type: 'swiper', data: data.ad_product_list })
+					item.list.push({ type: 'indexNav', data: data.theme_activity_list })
+					// item.list.push({ type: 'recommendList', data: data.product_list })
+					this.indexData.push(item)
+					console.log(item)
+				}
+				// this.indexData = indexData
 			},
 			// 点击选项卡触发事件
 			tabChange(index) {
