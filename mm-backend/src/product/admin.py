@@ -38,11 +38,15 @@ admin.site.register(AdProduct)
 
 
 class SecondCategoryAdmin(admin.ModelAdmin):
-    fields = ('title', 'first_category', ('cover_img', 'img_height', 'img_width', 'link_url'), 'order', 'active')
-    list_display = ['title', 'first_category', 'order', 'active', 'create_time', 'update_time']
     date_hierarchy = 'create_time'
-    empty_value_display = '-空-'
+    empty_value_display = '<空>'
     form = SecondCategoryForm
+    fields = ('title', 'first_category', ('cover_img', 'img_height', 'img_width', 'link_url'), 'order', 'active')
+    list_display = ('title', 'first_category', 'order', 'active', 'create_time', 'update_time')
+    list_display_links = ('title',)
+    # 修改时需要验证的字段例如'title'，不要放在list_editable中，这样会绕过ModelForm的验证机制
+    list_editable = ('first_category', 'order', 'active')
+    list_filter = ('title', 'first_category', 'active')
 
     class Meta:
         model = SecondCategory
@@ -56,13 +60,16 @@ class SkuInline(admin.TabularInline):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['title', 'short_desc', 'first_category', 'second_category', 'theme_activity', 'is_active',
-                    'create_time', 'update_time']
+    list_display = ('title', 'short_desc', 'first_category', 'second_category', 'theme_activity', 'is_active',
+                    'create_time', 'update_time')
+    list_display_links = ('title',)
+    # 修改时需要验证的字段例如'title'，不要放在list_editable中，这样会绕过ModelForm的验证机制
+    list_editable = ('first_category', 'second_category', 'theme_activity', 'is_active')
     ordering = ['title']
     actions = ['bulk_online', 'bulk_offline']
     inlines = [SkuInline]
     date_hierarchy = 'create_time'
-    empty_value_display = '-空-'
+    empty_value_display = '<空>'
 
     def bulk_online(self, request, queryset):
         rows_updated = queryset.update(is_active=True)
