@@ -7,11 +7,7 @@ from django.http import HttpResponseRedirect
 
 
 from .models import FirstCategory, SecondCategory, ThemeActivity, AdProduct, Product, Sku
-
-admin.site.register(FirstCategory)
-admin.site.register(SecondCategory)
-admin.site.register(ThemeActivity)
-admin.site.register(AdProduct)
+from .forms import SecondCategoryForm
 
 
 def export_as_json(modeladmin, request, queryset):
@@ -36,15 +32,37 @@ admin.site.add_action(export_as_json, 'export_json')
 admin.site.add_action(export_selected_objects, 'export_view')
 
 
+admin.site.register(FirstCategory)
+admin.site.register(ThemeActivity)
+admin.site.register(AdProduct)
+
+
+class SecondCategoryAdmin(admin.ModelAdmin):
+    fields = ('title', 'first_category', ('cover_img', 'img_height', 'img_width', 'link_url'), 'order', 'active')
+    list_display = ['title', 'first_category', 'order', 'active', 'create_time', 'update_time']
+    date_hierarchy = 'create_time'
+    empty_value_display = '-空-'
+    form = SecondCategoryForm
+
+    class Meta:
+        model = SecondCategory
+
+
+admin.site.register(SecondCategory, SecondCategoryAdmin)
+
+
 class SkuInline(admin.TabularInline):
     model = Sku
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['title', 'first_category', 'second_category', 'theme_activity', 'is_active']
+    list_display = ['title', 'short_desc', 'first_category', 'second_category', 'theme_activity', 'is_active',
+                    'create_time', 'update_time']
     ordering = ['title']
     actions = ['bulk_online', 'bulk_offline']
     inlines = [SkuInline]
+    date_hierarchy = 'create_time'
+    empty_value_display = '-空-'
 
     def bulk_online(self, request, queryset):
         rows_updated = queryset.update(is_active=True)

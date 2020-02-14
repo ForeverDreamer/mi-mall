@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.utils.html import format_html
 
 from mm.utils import get_filename_ext
 
@@ -187,10 +188,20 @@ class Product(models.Model):
     update_time = models.DateTimeField(auto_now=True)
     create_time = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
+
     objects = ProductManager()
 
     def __str__(self):
         return self.title
+
+    def short_desc(self):
+        return format_html(
+            '<span style="color: #{};">{}</span>',
+            'FF0000',
+            ''.join([self.desc[:5], ' ...'])
+        )
+
+    short_desc.short_description = 'short_desc'
 
 
 # 产品规格
