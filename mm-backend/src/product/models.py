@@ -183,7 +183,7 @@ class Product(models.Model):
     desc = models.TextField()
     first_category = models.ForeignKey(FirstCategory, on_delete=models.CASCADE)
     second_category = models.ForeignKey(SecondCategory, on_delete=models.CASCADE)
-    ThemeActivity = models.ForeignKey(ThemeActivity, null=True, blank=True, on_delete=models.SET_NULL)
+    theme_activity = models.ForeignKey(ThemeActivity, null=True, blank=True, on_delete=models.SET_NULL)
     update_time = models.DateTimeField(auto_now=True)
     create_time = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)

@@ -18,12 +18,15 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from .views import export_view
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('product/', include(('product.urls', 'product'), namespace='product')),
     path('cart/', include(('cart.urls', 'cart'), namespace='cart')),
     path('order/', include(('order.urls', 'order'), namespace='order')),
     path('pay/', include(('pay.urls', 'pay'), namespace='pay')),
+    path('export/', export_view, name='export'),
 ]
 
 if settings.DEBUG:
