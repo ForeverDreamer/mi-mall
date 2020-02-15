@@ -21,6 +21,7 @@ from mm.exceptions import ParameterError
 from .exceptions import InventoryShortage
 
 User = get_user_model()
+# LOGGER_NAME是'mm.cart.views'
 LOGGER_NAME = '{}.{}'.format(settings.PROJECT_NAME, __name__)
 logger = logging.getLogger(LOGGER_NAME)
 

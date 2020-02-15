@@ -7,7 +7,7 @@ WECHAT_STATUS = (
 )
 
 
-# 物流信息
+# 微信
 class Wechat(models.Model):
     status = models.CharField(max_length=10, choices=WECHAT_STATUS)
     order_no = models.CharField(max_length=50)

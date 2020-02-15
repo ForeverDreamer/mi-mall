@@ -32,9 +32,17 @@ admin.site.add_action(export_as_json, 'export_json')
 admin.site.add_action(export_selected_objects, 'export_view')
 
 
-admin.site.register(FirstCategory)
-admin.site.register(ThemeActivity)
-admin.site.register(AdProduct)
+class FirstCategoryAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug', 'active', 'create_time', 'update_time')
+    list_display_links = ('title',)
+    # 修改时需要验证的字段例如'title'，不要放在list_editable中，这样会绕过ModelForm的验证机制
+    list_editable = ('active', 'slug')
+
+    class Meta:
+        model = FirstCategory
+
+
+admin.site.register(FirstCategory, FirstCategoryAdmin)
 
 
 class SecondCategoryAdmin(admin.ModelAdmin):
@@ -61,6 +69,33 @@ class SecondCategoryAdmin(admin.ModelAdmin):
 
 
 admin.site.register(SecondCategory, SecondCategoryAdmin)
+
+
+class AdProductAdmin(admin.ModelAdmin):
+    list_display = ('location', 'link_url', 'image', 'image_width', 'image_height')
+    list_display_links = ('location',)
+    # 修改时需要验证的字段例如'title'，不要放在list_editable中，这样会绕过ModelForm的验证机制
+    list_editable = ('link_url', 'image')
+
+    class Meta:
+        model = AdProduct
+
+
+admin.site.register(AdProduct, AdProductAdmin)
+
+
+class ThemeActivityAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug', 'link_url', 'cover_img', 'img_width', 'img_height', 'order', 'active',
+                    'create_time', 'update_time')
+    list_display_links = ('title',)
+    # 修改时需要验证的字段例如'title'，不要放在list_editable中，这样会绕过ModelForm的验证机制
+    list_editable = ('slug', 'link_url', 'cover_img', 'order', 'active')
+
+    class Meta:
+        model = ThemeActivity
+
+
+admin.site.register(ThemeActivity, ThemeActivityAdmin)
 
 
 class SkuInline(admin.TabularInline):

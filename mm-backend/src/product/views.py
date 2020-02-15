@@ -14,6 +14,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import FirstCategory, AdProduct, ThemeActivity, Product, SecondCategory
 from .serializers import ProductListSerializer
 
+# LOGGER_NAME是'mm.product.views'
 LOGGER_NAME = '{}.{}'.format(settings.PROJECT_NAME, __name__)
 logger = logging.getLogger(LOGGER_NAME)
 

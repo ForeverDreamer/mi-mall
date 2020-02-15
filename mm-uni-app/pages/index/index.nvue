@@ -66,7 +66,7 @@
 	const dom = weex.requireModule('dom');
 	const currentWebview = plus.webview.currentWebview();
 	const base_url = 'http://192.168.31.124:8000/'
-	const base_media = 'http://192.168.31.124:8000/media/'
+	const base_media = base_url + 'media/'
 	
 	let indexData = [
 		{
@@ -236,11 +236,12 @@
 		methods: {
 			// 初始化数据
 			async __init() {
+				console.log('初始化数据');
 				let [error, result] = await uni.request({
 					url: base_url + 'product/recommends/',
 					// url: 'https://itman.icu/product/recommends/',
 					method: 'GET'
-				})
+				});
 				if (error) {
 					return uni.showToast({
 						title: error.errMsg,

@@ -136,7 +136,7 @@ class Coupon(models.Model):
     # 需要购满金额
     expense_amount = models.DecimalField(decimal_places=2, max_digits=10)
     # 每人限领数量
-    limit_num = models.IntegerField()
+    limit_num = models.PositiveIntegerField()
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     active = models.BooleanField(default=True)
@@ -169,22 +169,6 @@ class ReceiveCoupon(models.Model):
         return '{}_{}'.format(self.owner.username, self.coupon.title)
 
 
-# 购买商品和数量
-class OrderItem(models.Model):
-    sku = models.ForeignKey(Sku, on_delete=models.CASCADE)
-    purchase_num = models.IntegerField()
-    sale_price = models.DecimalField(decimal_places=2, max_digits=10, default=0)
-    update_time = models.DateTimeField(auto_now=True)
-    create_time = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = 'OrderItem'
-        verbose_name_plural = 'OrderItems'
-
-    def __str__(self):
-        return '{}_{}_{}_{}'.format(self.id, self.sku.product.title, self.sku.version, self.sku.color)
-
-
 class OrderQuerySet(models.query.QuerySet):
     def active(self):
         return self.filter(active=True)
@@ -206,7 +190,7 @@ class Order(models.Model):
     # 调用订单唯一流水号生成函数
     order_no = models.CharField(max_length=50, unique=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    order_items = models.ManyToManyField(OrderItem)
+    # order_items = models.ManyToManyField(OrderItem)
     coupon = models.ForeignKey(Coupon, on_delete=models.PROTECT)
     # 商品总价
     products_price = models.DecimalField(decimal_places=2, max_digits=10)
@@ -235,12 +219,31 @@ class Order(models.Model):
         return '{}_{}'.format(self.owner.username, self.status)
 
 
+# 购买商品和数量
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    sku = models.ForeignKey(Sku, on_delete=models.CASCADE)
+    purchase_num = models.PositiveIntegerField()
+    sale_price = models.DecimalField(decimal_places=2, max_digits=10, default=0)
+    update_time = models.DateTimeField(auto_now=True)
+    create_time = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'OrderItem'
+        verbose_name_plural = 'OrderItems'
+
+    def __str__(self):
+        return '{}_{}_{}_{}'.format(self.id, self.sku.product.title, self.sku.version, self.sku.color)
+
+
 # 订单评价
 class OrderReview(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     comment = models.TextField()
     rating = models.DecimalField(decimal_places=1, max_digits=1)
     active = models.BooleanField(default=True)
+    update_time = models.DateTimeField(auto_now=True)
+    create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'OrderReview'
@@ -254,6 +257,8 @@ class Refund(models.Model):
     reason = models.CharField(max_length=50, blank=True)
     status = models.CharField(max_length=10, choices=REFUND_STATUS)
     active = models.BooleanField(default=True)
+    update_time = models.DateTimeField(auto_now=True)
+    create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'Refund'
@@ -269,6 +274,8 @@ class RefundReview(models.Model):
     comment = models.TextField()
     rating = models.DecimalField(decimal_places=1, max_digits=1)
     active = models.BooleanField(default=True)
+    update_time = models.DateTimeField(auto_now=True)
+    create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'RefundReview'
@@ -283,6 +290,8 @@ class Shipping(models.Model):
     express_no = models.CharField(max_length=50)
     # status = models.CharField(max_length=10, choices=SHIPPING_STATUS)
     active = models.BooleanField(default=True)
+    update_time = models.DateTimeField(auto_now=True)
+    create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'Shipping'
@@ -295,6 +304,8 @@ class ShippingReview(models.Model):
     comment = models.TextField()
     rating = models.DecimalField(decimal_places=1, max_digits=1)
     active = models.BooleanField(default=True)
+    update_time = models.DateTimeField(auto_now=True)
+    create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'ShippingReview'

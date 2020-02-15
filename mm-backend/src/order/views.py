@@ -34,6 +34,7 @@ from .serializers import (
 )
 
 User = get_user_model()
+# LOGGER_NAME是'mm.order.views'
 LOGGER_NAME = '{}.{}'.format(settings.PROJECT_NAME, __name__)
 logger = logging.getLogger(LOGGER_NAME)
 
@@ -162,8 +163,9 @@ class OrderCreateAPIView(generics.CreateAPIView):
             sku = item.sku
             purchase_num = item.purchase_num
             sale_price = item.sku.discount_price
-            order_item = OrderItem.objects.create(sku=sku, purchase_num=purchase_num, sale_price=sale_price)
-            order.order_items.add(order_item)
+            OrderItem.objects.create(order=order, sku=sku, purchase_num=purchase_num, sale_price=sale_price)
+            # order_item = OrderItem.objects.create(order=order, sku=sku, purchase_num=purchase_num, sale_price=sale_price)
+            # order.order_items.add(order_item)
         for item in item_list:
             # 扣减商品库存数量
             item.sku.inventory -= item.purchase_num
