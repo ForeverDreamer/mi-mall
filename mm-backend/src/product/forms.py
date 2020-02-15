@@ -9,3 +9,9 @@ class SecondCategoryForm(forms.ModelForm):
         if len(title) > 10:
             raise forms.ValidationError("标题不要超过10个字符!")
         return title
+
+
+class SkuForm(forms.ModelForm):
+
+    def clean(self):
+        pass

@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 
 
 from .models import FirstCategory, SecondCategory, ThemeActivity, AdProduct, Product, Sku
-from .forms import SecondCategoryForm
+from .forms import SecondCategoryForm, SkuForm
 
 
 def export_as_json(modeladmin, request, queryset):
@@ -41,12 +41,20 @@ class SecondCategoryAdmin(admin.ModelAdmin):
     date_hierarchy = 'create_time'
     empty_value_display = '<空>'
     form = SecondCategoryForm
-    fields = ('title', 'first_category', ('cover_img', 'img_height', 'img_width', 'link_url'), 'order', 'active')
+    fields = (
+        'title', 'first_category', ('cover_img', 'img_height', 'img_width', 'link_url'), 'order', 'active',
+        'create_time', 'update_time')
     list_display = ('title', 'first_category', 'order', 'active', 'create_time', 'update_time')
     list_display_links = ('title',)
     # 修改时需要验证的字段例如'title'，不要放在list_editable中，这样会绕过ModelForm的验证机制
     list_editable = ('first_category', 'order', 'active')
-    list_filter = ('title', 'first_category', 'active')
+    list_filter = ('active', 'first_category', 'create_time', 'update_time')
+    list_per_page = 10
+    list_select_related = ('first_category',)
+    ordering = ('title',)
+    # radio_fields = {"first_category": admin.VERTICAL}
+    search_fields = ['title', 'first_category__title']
+    readonly_fields = ('img_height', 'img_width', 'create_time', 'update_time')
 
     class Meta:
         model = SecondCategory
@@ -57,6 +65,13 @@ admin.site.register(SecondCategory, SecondCategoryAdmin)
 
 class SkuInline(admin.TabularInline):
     model = Sku
+    # 只有一个foreign key可以不指定，有多个外键就必须要指定
+    fk_name = "product"
+    form = SkuForm
+    fields = ('version', 'color', 'cover_img', 'img_width', 'img_height', 'original_price', 'discount_price',
+              'min_purchase_num', 'max_purchase_num', 'inventory', 'is_active',)
+    readonly_fields = ('img_height', 'img_width')
+    extra = 1
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -70,6 +85,9 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [SkuInline]
     date_hierarchy = 'create_time'
     empty_value_display = '<空>'
+    # list_select_related = True
+    autocomplete_fields = ['second_category']
+    raw_id_fields = ("theme_activity",)
 
     def bulk_online(self, request, queryset):
         rows_updated = queryset.update(is_active=True)

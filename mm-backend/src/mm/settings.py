@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,6 +27,8 @@ SECRET_KEY = 'kp5@jf0@ymz9yi9md@2f+s3@gqc34@^%zc-5nxpaqfge5fiy$j'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+
+PROJECT_NAME = 'mm'
 
 
 # Application definition
@@ -59,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
 
@@ -171,6 +175,8 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
 
+# DEFAULT_FROM_EMAIL = 'webmaster@localhost'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -200,7 +206,7 @@ LOGGING = {
             'formatter': 'verbose'
         },
         'django_file': {
-            'level': 'WARNING',
+            'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(os.path.dirname(BASE_DIR), "log", "django.log"),
             'maxBytes': 1024*1024*5,
@@ -235,4 +241,15 @@ LOGGING = {
     },
 }
 
-PROJECT_NAME = 'mm'
+with open("mm/email_info.json") as f:
+    email_info = json.load(f)
+# 设置邮件域名
+EMAIL_HOST = email_info['EMAIL_HOST']
+# 设置端口号，为数字
+EMAIL_PORT = email_info['EMAIL_PORT']
+# 设置发件人邮箱
+EMAIL_HOST_USER = email_info['EMAIL_HOST_USER']
+# 设置发件人密码
+EMAIL_HOST_PASSWORD = email_info['EMAIL_HOST_PASSWORD']
+# 设置是否启用安全链接
+EMAIL_USER_TLS = bool(email_info['EMAIL_USER_TLS'])

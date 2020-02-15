@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -50,6 +51,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
     # Third apps
     'rest_framework',
     'django_filters',
@@ -61,6 +64,8 @@ INSTALLED_APPS = [
     'pay',
 ]
 
+SITE_ID = 1
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -70,6 +75,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'django.middleware.common.BrokenLinkEmailsMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
 
 # import re
@@ -85,7 +91,7 @@ ROOT_URLCONF = 'mm.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'mm', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -237,7 +243,7 @@ LOGGING = {
             'formatter': 'verbose'
         },
         'django_file': {
-            'level': 'WARNING',
+            'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(os.path.dirname(BASE_DIR), "log", "django.log"),
             'maxBytes': 1024*1024*5,
@@ -258,16 +264,29 @@ LOGGING = {
     },
     'loggers': {
         'mm': {
-            'handlers': ['mm_file', 'mail_admins'],
+            'handlers': ['mm_file'],
             # 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             'level': 'WARNING',
             'propagate': True,
         },
         'django': {
-            'handlers': ['django_file', 'django_console', 'mail_admins'],
+            'handlers': ['django_file'],
             'level': 'ERROR',
             # 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             'propagate': True,
         },
     },
 }
+
+with open("mm/email_info.json") as f:
+    email_info = json.load(f)
+# 设置邮件域名
+EMAIL_HOST = email_info['EMAIL_HOST']
+# 设置端口号，为数字
+EMAIL_PORT = email_info['EMAIL_PORT']
+# 设置发件人邮箱
+EMAIL_HOST_USER = email_info['EMAIL_HOST_USER']
+# 设置发件人密码
+EMAIL_HOST_PASSWORD = email_info['EMAIL_HOST_PASSWORD']
+# 设置是否启用安全链接
+EMAIL_USER_TLS = bool(email_info['EMAIL_USER_TLS'])
