@@ -19,10 +19,20 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.flatpages import views
 
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    # TokenVerifyView,
+)
+
 from .views import export_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('account/', include(('account.urls', 'account'), namespace='account')),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('product/', include(('product.urls', 'product'), namespace='product')),
     path('cart/', include(('cart.urls', 'cart'), namespace='cart')),
     path('order/', include(('order.urls', 'order'), namespace='order')),
