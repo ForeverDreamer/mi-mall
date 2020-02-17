@@ -41,7 +41,7 @@ class ProductCartItemCreateView(generics.CreateAPIView):
         # 检测库存数量
         if sku.inventory < 1:
             error_msg = "库存不足"
-            logger.warning(error_msg)
+            logger.warning(self.request.user.username + ' => ' + error_msg)
             raise ParameterError(detail=error_msg)
         # 已加入购物车则数量加1(不需要这么做，OneToOneField不允许重复创建，让客户端调用修改数量接口)
         # admin = User.objects.all().first()
@@ -93,7 +93,7 @@ class ProductCartItemMutiDeleteView(APIView):
         for item in items:
             if item not in item_id_list:
                 error_msg = "商品id:{}不在购物车中".format(item)
-                logger.warning(error_msg)
+                logger.warning(self.request.user.username + ' => ' + error_msg)
                 raise ParameterError(detail=error_msg)
         for item in item_list:
             item.delete()
