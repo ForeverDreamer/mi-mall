@@ -8,9 +8,9 @@ from rest_framework import generics, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.exceptions import ParseError
 
 from mm.utils import before_datetime, after_datetime
-from mm.exceptions import ParameterError
 from .utils import calculate_transport_costs, get_order_no, get_refund_no
 from .models import (
     ShippingAddress,
@@ -65,7 +65,7 @@ class CouponReceiveAPIView(generics.CreateAPIView):
             if coupon == c.coupon:
                 error_msg = "优惠券id:{}领取数量已达上限".format(coupon.id)
                 logger.warning(self.request.user.username + ' => ' + error_msg)
-                raise ParameterError(detail=error_msg)
+                raise ParseError(detail=error_msg)
         serializer.save()
 
 
@@ -90,12 +90,12 @@ class OrderCreateAPIView(generics.CreateAPIView):
         except ValueError:
             error_msg = "cart_items必须为整数"
             logger.warning(self.request.user.username + ' => ' + error_msg)
-            raise ParameterError(detail=error_msg)
+            raise ParseError(detail=error_msg)
         items = admin.cart.items.all()
         if not items.exists():
             error_msg = "购物车是空的"
             logger.warning(self.request.user.username + ' => ' + error_msg)
-            raise ParameterError(detail=error_msg)
+            raise ParseError(detail=error_msg)
         item_dict = {item.id: item for item in items}
         sku_dict = {}
         item_list = []
@@ -103,27 +103,27 @@ class OrderCreateAPIView(generics.CreateAPIView):
             if item_id not in item_dict.keys():
                 error_msg = "商品 item_id={}不在购物车".format(item_id)
                 logger.warning(self.request.user.username + ' => ' + error_msg)
-                raise ParameterError(detail=error_msg)
+                raise ParseError(detail=error_msg)
             # 库存是否足够
             if item_dict[item_id].sku.inventory < item_dict[item_id].purchase_num:
                 error_msg = "库存不足 sku_id={}".format(item_dict[item_id].sku.id)
                 logger.warning(self.request.user.username + ' => ' + error_msg)
-                raise ParameterError(detail=error_msg)
+                raise ParseError(detail=error_msg)
             sku_dict[item_dict[item_id].sku.id] = item_dict[item_id].sku
             item_list.append(item_dict[item_id])
         coupon = serializer.validated_data.get('coupon')
         # 优惠券是否active，CouponManager只返回active的对象，serializer会提示优惠券不存在
         # if not coupon.active:
-        #     raise ParameterError(detail="优惠券已下线")
+        #     raise ParseError(detail="优惠券已下线")
         # 优惠券是否在使用时间范围内
         if before_datetime(coupon.start_time):
             error_msg = "优惠券未到使用时间"
             logger.warning(self.request.user.username + ' => ' + error_msg)
-            raise ParameterError(detail=error_msg)
+            raise ParseError(detail=error_msg)
         if after_datetime(coupon.end_time):
             error_msg = "优惠券已过期"
             logger.warning(self.request.user.username + ' => ' + error_msg)
-            raise ParameterError(detail=error_msg)
+            raise ParseError(detail=error_msg)
         # 用户是否领取该优惠券,且没有使用
         coupon_list = admin.receivecoupon_set.all()
         received = False
@@ -133,13 +133,13 @@ class OrderCreateAPIView(generics.CreateAPIView):
                 if c.used:
                     error_msg = "该优惠券id:{}已经使用过".format(coupon.id)
                     logger.warning(self.request.user.username + ' => ' + error_msg)
-                    raise ParameterError(detail=error_msg)
+                    raise ParseError(detail=error_msg)
                 coupon_received = c
                 received = True
         if not received:
             error_msg = "用户没有领取过该优惠券id:{}".format(coupon.id)
             logger.warning(self.request.user.username + ' => ' + error_msg)
-            raise ParameterError(detail=error_msg)
+            raise ParseError(detail=error_msg)
         # 计算商品总价
         products_price = 0
         for sku in sku_dict.values():
@@ -179,7 +179,7 @@ class OrderCreateAPIView(generics.CreateAPIView):
         # try:
 
         # except IntegrityError as e:
-        #     raise ParameterError(detail='IntegrityError')
+        #     raise ParseError(detail='IntegrityError')
 
 
 # 订单列表
@@ -201,12 +201,12 @@ class OrderCancelAPIView(APIView):
         if not qs.exists():
             error_msg = '订单不存在'
             logger.warning(self.request.user.username + ' => ' + error_msg)
-            raise ParameterError(detail=error_msg)
+            raise ParseError(detail=error_msg)
         order = qs.first()
         if order.status != ORDER_STATUS[0][0]:
             error_msg = '订单不存在'
             logger.warning(self.request.user.username + ' => ' + error_msg)
-            raise ParameterError(detail=error_msg)
+            raise ParseError(detail=error_msg)
         order.active = False
         order.save()
         # 恢复商品库存数量
@@ -223,7 +223,7 @@ class OrderRefundAPIView(APIView):
         if order.status != ORDER_STATUS[1][0]:
             error_msg = '订单状态不支持此操作，status: {}'.format(order.status)
             logger.warning(self.request.user.username + ' => ' + error_msg)
-            raise ParameterError(detail=error_msg)
+            raise ParseError(detail=error_msg)
         order.status = ORDER_STATUS[5][0]
         order.save()
         refund = serializer.save()
@@ -244,12 +244,12 @@ class OrderConfirmReceiptAPIView(APIView):
         if not qs.exists():
             error_msg = '订单不存在'
             logger.warning(self.request.user.username + ' => ' + error_msg)
-            raise ParameterError(detail=error_msg)
+            raise ParseError(detail=error_msg)
         order = qs.first()
         if order.status != ORDER_STATUS[2][0]:
             error_msg = '订单状态不支持此操作，status: {}'.format(order.status)
             logger.warning(self.request.user.username + ' => ' + error_msg)
-            raise ParameterError(detail=error_msg)
+            raise ParseError(detail=error_msg)
         order.status = ORDER_STATUS[3][0]
         order.save()
         return Response({'msg': '确认收货成功'}, status=status.HTTP_200_OK)

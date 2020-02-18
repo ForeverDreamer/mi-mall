@@ -103,9 +103,9 @@ class SkuInline(admin.TabularInline):
     # 只有一个foreign key可以不指定，有多个外键就必须要指定
     fk_name = "product"
     form = SkuForm
-    fields = ('version', 'color', 'cover_img', 'img_width', 'img_height', 'original_price', 'discount_price',
+    fields = ('id', 'version', 'color', 'cover_img', 'img_width', 'img_height', 'original_price', 'discount_price',
               'min_purchase_num', 'max_purchase_num', 'inventory', 'is_active',)
-    readonly_fields = ('img_height', 'img_width')
+    readonly_fields = ('id', 'img_height', 'img_width')
     extra = 1
 
 

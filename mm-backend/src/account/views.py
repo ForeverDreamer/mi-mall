@@ -33,10 +33,11 @@ class SendCodeAPIView(APIView):
 
     def post(self, *args, **kwargs):
         serializer = SendCodeSerializer(data=self.request.data)
-        if not serializer.is_valid():
-            error_msg = str(serializer.errors.get('phone')[0])
-            logger.warning(error_msg)
-            raise ParseError(detail=error_msg)
+        # if not serializer.is_valid():
+        #     error_msg = str(serializer.errors.get('phone')[0])
+        #     logger.warning(error_msg)
+        #     raise ParseError(detail=error_msg)
+        serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         phone = data.get('phone')
         # # 检查验证码缓存缓存
@@ -67,10 +68,11 @@ class CodeRegOrLoginAPIView(generics.CreateAPIView):
 
     def create(self, *args, **kwargs):
         serializer = self.get_serializer(data=self.request.data)
-        if not serializer.is_valid():
-            error_msg = serializer.errors
-            logger.warning(error_msg)
-            raise ParseError(detail=error_msg)
+        # if not serializer.is_valid():
+        #     error_msg = serializer.errors
+        #     logger.warning(error_msg)
+        #     raise ParseError(detail=error_msg)
+        serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         phone = data.get('phone')
         # 缓存检查验证码是否一致

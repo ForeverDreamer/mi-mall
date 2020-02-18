@@ -4,7 +4,7 @@ from .models import Cart, ProductCartItem
 
 
 class CartAdmin(admin.ModelAdmin):
-    list_display = ('owner', 'is_active', 'create_time', 'update_time')
+    list_display = ('id', 'owner', 'is_active', 'create_time', 'update_time')
     list_display_links = ('owner',)
     readonly_fields = ('owner',)
 

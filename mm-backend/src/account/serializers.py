@@ -1,3 +1,6 @@
+import logging
+
+from django.conf import settings
 from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
@@ -5,6 +8,8 @@ from rest_framework import serializers
 from .validators import is_phone, is_veri_code
 
 User = get_user_model()
+LOGGER_NAME = '{}.{}'.format(settings.PROJECT_NAME, __name__)
+logger = logging.getLogger(LOGGER_NAME)
 
 
 class SendCodeSerializer(serializers.Serializer):
@@ -12,7 +17,9 @@ class SendCodeSerializer(serializers.Serializer):
 
     def validate_phone(self, phone):
         if not is_phone(phone):
-            raise serializers.ValidationError('手机号格式错误！')
+            error_msg = "手机号格式错误"
+            logger.warning(phone + ' => ' + error_msg)
+            raise serializers.ValidationError(error_msg)
         return phone
 
 
@@ -22,12 +29,16 @@ class CodeRegOrLoginSerializer(serializers.Serializer):
 
     def validate_phone(self, phone):
         if not is_phone(phone):
-            raise serializers.ValidationError('手机号格式错误！')
+            error_msg = "手机号格式错误"
+            logger.warning(phone + ' => ' + error_msg)
+            raise serializers.ValidationError(error_msg)
         return phone
 
     def validate_veri_code(self, veri_code):
         if not is_veri_code(veri_code):
-            raise serializers.ValidationError('验证码格式错误！')
+            error_msg = "验证码格式错误"
+            logger.warning(veri_code + ' => ' + error_msg)
+            raise serializers.ValidationError(error_msg)
         return veri_code
 
     def create(self, validated_data):

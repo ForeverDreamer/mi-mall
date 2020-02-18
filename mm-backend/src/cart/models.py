@@ -44,7 +44,7 @@ class Cart(models.Model):
 # 购买商品和数量
 class ProductCartItem(models.Model):
     cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
-    sku = models.OneToOneField(Sku, on_delete=models.CASCADE)
+    sku = models.ForeignKey(Sku, on_delete=models.CASCADE)
     purchase_num = models.PositiveIntegerField()
     update_time = models.DateTimeField(auto_now=True)
     create_time = models.DateTimeField(auto_now_add=True)

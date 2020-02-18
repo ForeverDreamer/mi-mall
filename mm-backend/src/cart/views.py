@@ -8,6 +8,7 @@ from rest_framework import generics, status
 from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.exceptions import ParseError
 
 from product.models import Product
 from .models import ProductCartItem, Sku
@@ -38,11 +39,21 @@ class ProductCartItemCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         sku = serializer.validated_data.get('sku')
+        cart = serializer.validated_data.get('cart')
+        # 是否是当前用户的cart
+        if cart != self.request.user.cart:
+            error_msg = "购物车id不匹配"
+            logger.warning(self.request.user.username + ' => ' + error_msg)
+            raise ParseError(detail=error_msg)
+        # if sku in cart.items.all():
+        #     error_msg = "该商品已存在！"
+        #     logger.warning(self.request.user.username + ' => ' + error_msg)
+        #     raise ParseError(detail=error_msg)
         # 检测库存数量
         if sku.inventory < 1:
             error_msg = "库存不足"
             logger.warning(self.request.user.username + ' => ' + error_msg)
-            raise ParameterError(detail=error_msg)
+            raise ParseError(detail=error_msg)
         # 已加入购物车则数量加1(不需要这么做，OneToOneField不允许重复创建，让客户端调用修改数量接口)
         # admin = User.objects.all().first()
         # cart_item = None
@@ -54,6 +65,7 @@ class ProductCartItemCreateView(generics.CreateAPIView):
         #     cart_item.save()
         # else:
         #     serializer.save()
+        # serializer.save(cart=cart)
         serializer.save()
 
 
@@ -94,7 +106,7 @@ class ProductCartItemMutiDeleteView(APIView):
             if item not in item_id_list:
                 error_msg = "商品id:{}不在购物车中".format(item)
                 logger.warning(self.request.user.username + ' => ' + error_msg)
-                raise ParameterError(detail=error_msg)
+                raise ParseError(detail=error_msg)
         for item in item_list:
             item.delete()
         return Response({"msg": "删除成功！"}, status=status.HTTP_200_OK)
