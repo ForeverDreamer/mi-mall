@@ -174,6 +174,10 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
+    # 'DEFAULT_PARSER_CLASSES': [
+    #     'rest_framework.parsers.JSONParser',
+    # ],
+    'EXCEPTION_HANDLER': 'mm.utils.custom_exception_handler',
     'DEFAULT_PAGINATION_CLASS': 'product.pagination.ProductPagination',
     'SEARCH_PARAM': 'q',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'

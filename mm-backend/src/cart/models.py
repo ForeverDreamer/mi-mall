@@ -50,6 +50,7 @@ class ProductCartItem(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        unique_together = ['cart', 'sku']
         verbose_name = 'ProductCartItem'
         verbose_name_plural = 'ProductCartItems'
 
