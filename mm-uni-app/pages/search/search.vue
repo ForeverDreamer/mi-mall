@@ -41,6 +41,13 @@
 				]
 			}
 		},
+		onNavigationBarButtonTap(e) {
+			if (e.index === 0) {
+				uni.navigateTo({
+					url: '../search-list/search-list',
+				});
+			} 
+		},
 		methods: {
 			
 		}

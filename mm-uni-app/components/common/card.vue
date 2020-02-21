@@ -1,5 +1,5 @@
 <template>
-	<view class="card" :style="cardStyle">
+	<view class="uni-card" :style="cardStyle">
 		<!-- head -->
 		<view v-if="showhead" class="p-2 main-border-color"
 		:class="getHeadClass">
