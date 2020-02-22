@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import FirstCategory, AdProduct, Product, Sku
+from .models import FirstCategory, AdProduct, Product, ProductCarouselImage, Sku
 
 
 class StringListField(serializers.ListField):
@@ -25,7 +25,7 @@ class AdProductListSerializer(serializers.ModelSerializer):
         ]
 
 
-class SkuListSerializer(serializers.ModelSerializer):
+class SkuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sku
         fields = [
@@ -38,13 +38,23 @@ class SkuListSerializer(serializers.ModelSerializer):
         ]
 
 
-class ProductListSerializer(serializers.ModelSerializer):
-    sku_set = SkuListSerializer(many=True, read_only=True)
+class ProductCarouselImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductCarouselImage
+        fields = [
+            'image'
+        ]
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    sku_set = SkuSerializer(many=True, read_only=True)
+    carouse_images = ProductCarouselImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
         fields = [
             'title',
             'desc',
+            'carouse_images',
             'sku_set',
         ]

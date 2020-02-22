@@ -5,7 +5,8 @@ from .views import (
     RecommendsAPIView,
     LoadMoreAPIView,
     CellphoneAPIView,
-    )
+    ProductDetailAPIView,
+)
 
 urlpatterns = [
     path('recommends/', cache_page(1 * 10)(RecommendsAPIView.as_view()), name='recommends'),
@@ -17,4 +18,5 @@ urlpatterns = [
     path('laptop/', RecommendsAPIView.as_view(), name='laptop'),
     path('appliance/', RecommendsAPIView.as_view(), name='appliance'),
     path('life/', RecommendsAPIView.as_view(), name='life'),
+    path('<str:pk>/', ProductDetailAPIView.as_view(), name='product-detail'),
 ]

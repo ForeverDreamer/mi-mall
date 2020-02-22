@@ -67,7 +67,7 @@
 	const currentWebview = plus.webview.currentWebview();
 	const base_url = 'http://192.168.31.124:8000/'
 	const base_media = base_url + 'media/'
-	const access_token = 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTgyMzM5MTA2LCJqdGkiOiI2OWE1ZjMzOWU0ZjU0NDIwODU3Yzg0YmE1MmViYTRjYSIsInVzZXJfaWQiOjN9.C0Fpa2-lhhEj5RFdKsobis4jaege1Looqg3GhHuboCA'
+	const access_token = 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTgyNDU3MjUyLCJqdGkiOiI3MjQ5NWRlZjU4MmQ0NjE1OGI3M2VlZjhmMmIwNDc3MCIsInVzZXJfaWQiOjN9.IinXLz5QRl17OnGC6Z26ngz7_vUdof9v5NIQnI7wfDM'
 	
 	let indexData = [
 		{
@@ -281,13 +281,17 @@
 					item.cover_img = base_media + item.cover_img
 					// this.carousel.push(item)
 				}
+				for(let item of data.recommend_list){
+					item.cover_img = base_media + item.cover_img
+					// this.carousel.push(item)
+				}
 				for(let item of data.first_category_list){
 					item.list = []
 					item.list.push({ type: 'swiper', data: data.ad_product_list })
 					item.list.push({ type: 'indexNav', data: data.theme_activity_list })
-					// item.list.push({ type: 'recommendList', data: data.product_list })
+					item.list.push({ type: 'recommendList', data: data.recommend_list })
 					this.indexData.push(item)
-					console.log(item)
+					// console.log(item)
 				}
 				// this.indexData = indexData
 			},
@@ -317,7 +321,7 @@
 				setTimeout(() => {
 					this.refreshShow = 'hide';
 					this.refreshText = '下拉可以刷新';
-				}, 2000)
+				}, 1000)
 			},
 			onPullingDown(e) {
 				this.refreshText = e.pullingDistance > e.viewHeight ? '释放就能刷新咯' : '下拉可以刷新';
@@ -330,13 +334,13 @@
 				this.loadingShow = 'show';
 				this.loadText = '加载中...';
 				setTimeout(() => {
-					this.newsItems[index].list[4].data = [
-						...this.newsItems[index].list[4].data,
-						...moreData
-					];
+					// this.newsItems[index].list[4].data = [
+					// 	...this.newsItems[index].list[4].data,
+					// 	...moreData
+					// ];
 					this.loadingShow = 'hide';
 					this.loadText = '上拉加载更多';
-				}, 2000);
+				}, 1000);
 			}
 		}
 	};

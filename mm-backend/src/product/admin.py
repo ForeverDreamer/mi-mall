@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 
 
-from .models import FirstCategory, SecondCategory, ThemeActivity, AdProduct, Product, Sku
+from .models import FirstCategory, SecondCategory, ThemeActivity, AdProduct, Product, ProductCarouselImage, Sku
 from .forms import SecondCategoryForm, SkuForm
 
 
@@ -98,6 +98,15 @@ class ThemeActivityAdmin(admin.ModelAdmin):
 admin.site.register(ThemeActivity, ThemeActivityAdmin)
 
 
+class CarouselImageInline(admin.TabularInline):
+    model = ProductCarouselImage
+    # 只有一个foreign key可以不指定，有多个外键就必须要指定
+    fk_name = "product"
+    fields = ('id', 'image', 'image_width', 'image_height')
+    readonly_fields = ('id', 'image_width', 'image_height')
+    extra = 1
+
+
 class SkuInline(admin.TabularInline):
     model = Sku
     # 只有一个foreign key可以不指定，有多个外键就必须要指定
@@ -110,14 +119,14 @@ class SkuInline(admin.TabularInline):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('title', 'short_desc', 'first_category', 'second_category', 'theme_activity', 'is_active',
+    list_display = ('id', 'title', 'short_desc', 'first_category', 'second_category', 'theme_activity', 'is_active',
                     'create_time', 'update_time')
     list_display_links = ('title',)
     # 修改时需要验证的字段例如'title'，不要放在list_editable中，这样会绕过ModelForm的验证机制
     list_editable = ('first_category', 'second_category', 'theme_activity', 'is_active')
     ordering = ['title']
     actions = ['bulk_online', 'bulk_offline']
-    inlines = [SkuInline]
+    inlines = [CarouselImageInline, SkuInline]
     date_hierarchy = 'create_time'
     empty_value_display = '<空>'
     # list_select_related = True

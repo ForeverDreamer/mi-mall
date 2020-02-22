@@ -12,7 +12,7 @@ from rest_framework.exceptions import ParseError
 
 from product.models import Product
 from .models import ProductCartItem, Sku
-from product.serializers import SkuListSerializer
+from product.serializers import SkuSerializer
 from .serializers import (
     ProductCartItemSerializer,
     ProductCartItemCreateSerializer,
@@ -71,7 +71,7 @@ class ProductCartItemCreateView(generics.CreateAPIView):
 
 # 获取单个产品的sku列表
 class ProductSkuListView(generics.ListAPIView):
-    serializer_class = SkuListSerializer
+    serializer_class = SkuSerializer
 
     def get_queryset(self):
         product_id = self.request.query_params.get('product_id')

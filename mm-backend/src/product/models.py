@@ -168,7 +168,12 @@ class ProductManager(models.Manager):
         return self.get_queryset().active()
 
     def guess_you_like(self):
-        return self.all()
+        product_list = self.all()
+        recommend_list = []
+        for p in product_list:
+            for sku in p.sku_set.all().values('version', 'color', 'cover_img', 'original_price', 'discount_price'):
+                recommend_list.append(sku)
+        return recommend_list
 
 
 def product_cover_image_upload(instance, filename):
@@ -204,6 +209,26 @@ class Product(models.Model):
     short_desc.short_description = 'short_desc'
 
 
+def product_carousel_image_upload(instance, filename):
+    new_filename = uuid.uuid4()
+    name, ext = get_filename_ext(filename)
+    image_name = '{new_filename}{ext}'.format(new_filename=new_filename, ext=ext)
+    return "image/product/{product_id}/carousel/{image_name}".format(product_id=instance.product.id, image_name=image_name)
+
+
+class ProductCarouselImage(models.Model):
+    product = models.ForeignKey(Product, related_name='carouse_images', on_delete=models.CASCADE)
+    image_height = models.IntegerField(blank=True, null=True)
+    image_width = models.IntegerField(blank=True, null=True)
+    image = models.ImageField(upload_to=product_carousel_image_upload, height_field='image_height',
+                              width_field='image_width')
+    updated = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.image)
+
+
 # 产品规格
 class Sku(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -215,9 +240,9 @@ class Sku(models.Model):
                                   width_field='img_width')
     original_price = models.DecimalField(default=0, decimal_places=2, max_digits=10)
     discount_price = models.DecimalField(default=0, decimal_places=2, max_digits=10)
-    inventory = models.IntegerField()
-    min_purchase_num = models.IntegerField(default=1)
-    max_purchase_num = models.IntegerField(default=9999)
+    inventory = models.PositiveIntegerField(default=9999)
+    min_purchase_num = models.PositiveIntegerField(default=1)
+    max_purchase_num = models.PositiveIntegerField(default=9999)
     is_active = models.BooleanField(default=True)
     update_time = models.DateTimeField(auto_now=True)
     create_time = models.DateTimeField(auto_now_add=True)

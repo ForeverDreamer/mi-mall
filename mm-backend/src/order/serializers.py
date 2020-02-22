@@ -7,7 +7,7 @@ from .models import (
     OrderItem,
     Refund,
 )
-from product.serializers import SkuListSerializer
+from product.serializers import SkuSerializer
 
 
 class ShippingAddressListCreateSerializer(serializers.ModelSerializer):
@@ -83,7 +83,7 @@ class ReceiveCouponListSerializer(serializers.ModelSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     total_price = serializers.SerializerMethodField()
-    sku = SkuListSerializer(read_only=True)
+    sku = SkuSerializer(read_only=True)
 
     class Meta:
         model = OrderItem
