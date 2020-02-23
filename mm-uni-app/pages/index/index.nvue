@@ -55,6 +55,7 @@
 </template>
 
 <script>
+	import $H from '@/common/lib/request.js'
 	import sumTabbar from '@/components/index/nvue/sum-tabbar.nvue';
 	import sumSlider from '@/components/index/nvue/sum-slider.nvue';
 	import sumIndexNavs from '@/components/index/nvue/sum-index-navs.nvue';
@@ -65,139 +66,7 @@
 
 	const dom = weex.requireModule('dom');
 	const currentWebview = plus.webview.currentWebview();
-	const base_url = 'http://192.168.31.124:8000/'
-	const base_media = base_url + 'media/'
-	const access_token = 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTgyNDU3MjUyLCJqdGkiOiI3MjQ5NWRlZjU4MmQ0NjE1OGI3M2VlZjhmMmIwNDc3MCIsInVzZXJfaWQiOjN9.IinXLz5QRl17OnGC6Z26ngz7_vUdof9v5NIQnI7wfDM'
-	
-	let indexData = [
-		{
-			name: '关注',
-			list: [
-				{
-					type: 'swiper',
-					data: [
-						{src:"/static/images/demo/demo3.jpg"},
-						{src:"/static/images/demo/demo4.jpg"},
-						{src:"/static/images/demo/demo5.jpg"}
-					]
-				},
-				{
-					type: 'indexNav',
-					data: [
-						{src:"/static/images/indexnav/1.png", text:"新品分类"},
-						{src:"/static/images/indexnav/2.gif", text:"小米众筹"},
-						{src:"/static/images/indexnav/3.gif", text:"以旧换新"},
-						{src:"/static/images/indexnav/4.gif", text:"一分拼团"},
-						{src:"/static/images/indexnav/5.gif", text:"超值特卖"},
-						{src:"/static/images/indexnav/6.gif", text:"小米秒杀"},
-						{src:"/static/images/indexnav/7.gif", text:"真心想要"},
-						{src:"/static/images/indexnav/8.gif", text:"电视热卖"},
-						{src:"/static/images/indexnav/9.gif", text:"加点热卖"},
-						{src:"/static/images/indexnav/10.gif", text:"米粉卡"}
-					]
-				},
-				{
-					type: 'threeAdv',
-					data: [
-						{
-							src:"/static/images/demo/demo1.jpg"
-						},
-						{
-							src:"/static/images/demo/demo2.jpg"
-						},
-						{
-							src:"/static/images/demo/demo2.jpg"
-						}
-					]
-				},
-				{
-					type: 'oneAdv',
-					data: {
-						cover: '/static/images/demo/demo4.jpg',
-						title: '每日精选'
-					}
-				},
-				{
-					type: "recommendList",
-					data:[
-						{
-							cover:"/static/images/demo/list/1.jpg",
-							title:"米家空调",
-							desc:"1.5匹变频",
-							oprice:2699,
-							pprice:1399
-						},
-						{
-							cover:"/static/images/demo/list/1.jpg",
-							title:"米家空调",
-							desc:"1.5匹变频",
-							oprice:2699,
-							pprice:1399
-						},
-						{
-							cover:"/static/images/demo/list/1.jpg",
-							title:"米家空调",
-							desc:"1.5匹变频",
-							oprice:2699,
-							pprice:1399
-						}
-					]
-				}
-			]
-		},
-		{
-			name:"体育",
-			list: []
-		},
-		{
-			name:"热点",
-			list: []
-		},
-		{
-			name:"财经",
-			list: []
-		},
-		{
-			name:"娱乐",
-			list: []
-		},
-		{
-			name:"军事",
-			list: []
-		},
-		{
-			name:"历史",
-			list: []
-		},
-		{
-			name:"本地",
-			list: []
-		}
-	]
-	
-	let moreData = [
-		{
-			cover:"/static/images/demo/list/1.jpg",
-			title:"米家空调",
-			desc:"1.5匹变频",
-			oprice:2699,
-			pprice:1399
-		},
-		{
-			cover:"/static/images/demo/list/1.jpg",
-			title:"米家空调",
-			desc:"1.5匹变频",
-			oprice:2699,
-			pprice:1399
-		},
-		{
-			cover:"/static/images/demo/list/1.jpg",
-			title:"米家空调",
-			desc:"1.5匹变频",
-			oprice:2699,
-			pprice:1399
-		}
-	]
+	const base_media = $H.common.base_media
 				
 	export default {
 		components: {
@@ -224,7 +93,7 @@
 		created() {
 			// 监听当前窗口显示
 			currentWebview.addEventListener('show', e => {
-				console.log('indexShow');
+				// console.log('indexShow');
 			});
 			// 监听点击搜索框
 			uni.onNavigationBarSearchInputClicked(() => {
@@ -244,56 +113,65 @@
 		methods: {
 			// 初始化数据
 			async __init() {
-				console.log('初始化数据');
-				let [error, result] = await uni.request({
-					url: base_url + 'product/recommends/',
-					// url: 'https://itman.icu/product/recommends/',
-					method: 'GET',
-					header: {
-					        'Authorization': access_token //自定义请求头信息
-					},
-				});
-				if (error) {
-					return uni.showToast({
-						title: error.errMsg,
-						icon: 'none'
-					});
+				// console.log('初始化数据');
+				let result = await $H.get('product/recommends/');
+				if (result) {
+					// console.log('请求成功');
+					// console.log(result);
+					const data =  result.data;
+					// this.indexData.first_category_list = data.first_category_list
+					// for(let i of this.indexData.first_category_list){
+					// 	console.log(i.title) //打印出来的是value 2,3,5,4,2,2
+					// }
+					// this.first_category_list = data.first_category_list
+					for(let item of data.ad_product_list){
+						item.image = base_media + item.image
+						// this.carousel.push(item)
+					}
+					for(let item of data.theme_activity_list){
+						item.cover_img = base_media + item.cover_img
+						// this.carousel.push(item)
+					}
+					for(let item of data.recommend_list){
+						item.cover_img = base_media + item.cover_img
+						// this.carousel.push(item)
+					}
+					for(let item of data.first_category_list){
+						item.list = []
+						item.list.push({ type: 'swiper', data: data.ad_product_list })
+						item.list.push({ type: 'indexNav', data: data.theme_activity_list })
+						item.list.push({ type: 'recommendList', data: data.recommend_list })
+						this.indexData.push(item)
+						// console.log(item)
+					}
 				}
-				if (result.statusCode !== 200) {
-					return uni.showToast({
-						title: result.statusCode + ' ' + result.data,
-						icon: 'none'
-					})
+				// $H.get('product/recommends/').then((result) => {
 					
-				}
-				console.log(result.data.data)
-				const data =  result.data.data
-				// this.indexData.first_category_list = data.first_category_list
-				// for(let i of this.indexData.first_category_list){
-				// 	console.log(i.title) //打印出来的是value 2,3,5,4,2,2
+				// }).catch((err) => {
+				// 	console.log(err);
+				// })
+				
+				// let [error, result] = await uni.request({
+				// 	url: base_url + 'product/recommends/',
+				// 	// url: 'https://itman.icu/product/recommends/',
+				// 	method: 'GET',
+				// 	header: {
+				// 	        'Authorization': access_token //自定义请求头信息
+				// 	},
+				// });
+				// if (error) {
+				// 	return uni.showToast({
+				// 		title: error.errMsg,
+				// 		icon: 'none'
+				// 	});
 				// }
-				// this.first_category_list = data.first_category_list
-				for(let item of data.ad_product_list){
-					item.image = base_media + item.image
-					// this.carousel.push(item)
-				}
-				for(let item of data.theme_activity_list){
-					item.cover_img = base_media + item.cover_img
-					// this.carousel.push(item)
-				}
-				for(let item of data.recommend_list){
-					item.cover_img = base_media + item.cover_img
-					// this.carousel.push(item)
-				}
-				for(let item of data.first_category_list){
-					item.list = []
-					item.list.push({ type: 'swiper', data: data.ad_product_list })
-					item.list.push({ type: 'indexNav', data: data.theme_activity_list })
-					item.list.push({ type: 'recommendList', data: data.recommend_list })
-					this.indexData.push(item)
-					// console.log(item)
-				}
-				// this.indexData = indexData
+				// if (result.statusCode !== 200) {
+				// 	return uni.showToast({
+				// 		title: result.statusCode + ' ' + result.data,
+				// 		icon: 'none'
+				// 	})
+					
+				// }
 			},
 			// 点击选项卡触发事件
 			tabChange(index) {
@@ -327,20 +205,28 @@
 				this.refreshText = e.pullingDistance > e.viewHeight ? '释放就能刷新咯' : '下拉可以刷新';
 			},
 			// 上拉加载更多
-			onLoading(index) {
+			async onLoading(index) {
 				if (this.loadText !== '上拉加载更多') {
 					return;
 				}
 				this.loadingShow = 'show';
 				this.loadText = '加载中...';
-				setTimeout(() => {
-					// this.newsItems[index].list[4].data = [
-					// 	...this.newsItems[index].list[4].data,
-					// 	...moreData
-					// ];
+				
+				let result = await $H.get('product/loadmore/')
+				if (result) {
+					// console.log(result);
+					const recommend_list =  result.data.recommend_list
+					for(let item of recommend_list){
+						item.cover_img = base_media + item.cover_img
+						// this.carousel.push(item)
+					}
+					this.indexData[this.tabIndex].list[2].data = [
+						...this.indexData[this.tabIndex].list[2].data,
+						...recommend_list
+					];
 					this.loadingShow = 'hide';
 					this.loadText = '上拉加载更多';
-				}, 1000);
+				}
 			}
 		}
 	};

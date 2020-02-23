@@ -1,4 +1,5 @@
 import uuid
+import random
 
 from django.db import models
 from django.utils.html import format_html
@@ -173,6 +174,7 @@ class ProductManager(models.Manager):
         for p in product_list:
             for sku in p.sku_set.all().values('version', 'color', 'cover_img', 'original_price', 'discount_price'):
                 recommend_list.append(sku)
+        random.shuffle(recommend_list)
         return recommend_list
 
 
@@ -217,7 +219,7 @@ def product_carousel_image_upload(instance, filename):
 
 
 class ProductCarouselImage(models.Model):
-    product = models.ForeignKey(Product, related_name='carouse_images', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name='carousel_images', on_delete=models.CASCADE)
     image_height = models.IntegerField(blank=True, null=True)
     image_width = models.IntegerField(blank=True, null=True)
     image = models.ImageField(upload_to=product_carousel_image_upload, height_field='image_height',

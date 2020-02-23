@@ -33,7 +33,7 @@ class RecommendsAPIView(APIView):
             'theme_activity_list': theme_activity_list,
             'recommend_list': recommend_list,
         }
-        return Response({'data': data}, status=status.HTTP_200_OK)
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class CellphoneAPIView(APIView):
@@ -51,13 +51,17 @@ class CellphoneAPIView(APIView):
             'second_category_list': second_category_list,
             'product_list': product_list,
         }
-        return Response({'data': data}, status=status.HTTP_200_OK)
+        return Response(data, status=status.HTTP_200_OK)
 
 
 # 通过分页机制，客户端get传递limit和offset决定数据量
-class LoadMoreAPIView(generics.ListAPIView):
-    queryset = Product.objects.guess_you_like()
-    serializer_class = ProductSerializer
+class LoadMoreAPIView(APIView):
+    def get(self, *args, **kwargs):
+        recommend_list = Product.objects.guess_you_like()
+        data = {
+            'recommend_list': recommend_list,
+        }
+        return Response(data, status=status.HTTP_200_OK)
 
 
 # 产品详情

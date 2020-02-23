@@ -98,7 +98,7 @@ class ThemeActivityAdmin(admin.ModelAdmin):
 admin.site.register(ThemeActivity, ThemeActivityAdmin)
 
 
-class CarouselImageInline(admin.TabularInline):
+class ProductCarouselImageInline(admin.TabularInline):
     model = ProductCarouselImage
     # 只有一个foreign key可以不指定，有多个外键就必须要指定
     fk_name = "product"
@@ -126,7 +126,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ('first_category', 'second_category', 'theme_activity', 'is_active')
     ordering = ['title']
     actions = ['bulk_online', 'bulk_offline']
-    inlines = [CarouselImageInline, SkuInline]
+    inlines = [ProductCarouselImageInline, SkuInline]
     date_hierarchy = 'create_time'
     empty_value_display = '<空>'
     # list_select_related = True

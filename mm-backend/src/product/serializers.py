@@ -48,13 +48,13 @@ class ProductCarouselImageSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     sku_set = SkuSerializer(many=True, read_only=True)
-    carouse_images = ProductCarouselImageSerializer(many=True, read_only=True)
+    carousel_images = ProductCarouselImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
         fields = [
             'title',
             'desc',
-            'carouse_images',
+            'carousel_images',
             'sku_set',
         ]
