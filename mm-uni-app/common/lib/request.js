@@ -47,18 +47,28 @@ export default {
 			});
 		})
 	},
-	// get请求
 	get(url,data = {},options = {}){
 		options.url = url
 		options.data = data
 		options.method = 'GET'
 		return this.request(options)
 	},
-	// post请求
 	post(url,data = {},options = {}){
 		options.url = url
 		options.data = data
 		options.method = 'POST'
+		return this.request(options)
+	},
+	patch(url,data = {},options = {}){
+		options.url = url
+		options.data = data
+		options.method = 'PATCH '
+		return this.request(options)
+	},
+	put(url,data = {},options = {}){
+		options.url = url
+		options.data = data
+		options.method = 'PUT'
 		return this.request(options)
 	},
 	del(url,data = {},options = {}){

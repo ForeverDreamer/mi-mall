@@ -1,5 +1,5 @@
 <template>
-	<scroll-view scroll-x class="scroll-row">
+	<scroll-view scroll-x class="scroll-row p-2">
 		<view class="scroll-row-item" style="width: 170rpx; height: 110rpx;"
 		v-for="(item, index) in baseAttrs" :key="index">
 			<view class="iconfont line-h-sm" :class="item.icon"></view>
