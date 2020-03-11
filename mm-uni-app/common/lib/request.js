@@ -6,7 +6,7 @@ export default {
 		header: {
 			'Content-Type': 'application/json; charset-UTF-8',
 			'Content-Type': 'application/x-www-form-urlencoded',
-			'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTgyNTI1MTQzLCJqdGkiOiIxZmZjMTBkNTRjM2E0NzZlOTg0YWRjMzUxYTdlZTE0MyIsInVzZXJfaWQiOjN9.6f3fCGbL58CUJHWdfxQAYydKlNd11UZgneL3NqF3ckg'
+			'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTgyNjI2NTU4LCJqdGkiOiJkOGU1NDU2YzAzZjc0YmNlYTQ1YzAzZWIyNTBjMGUyYyIsInVzZXJfaWQiOjN9.qOu8qKFk-EFcSpQBQjaIAh5TtceVfYHCSNLGfNn0fiA'
 		},
 		data: {},
 		method: 'GET',

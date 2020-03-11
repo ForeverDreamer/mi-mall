@@ -2,14 +2,17 @@
 	<view>
 		<!-- 商品详情大图 -->
 		<swiper-image :resdata="detail.banners" height="750" preview />
+		
 		<!-- 基础详情 -->
 		<base-info :detail="detail" />
+		
 		<!-- 滚动商品特性 w170*h110 -->
 		<scrollAttrs :baseAttrs="detail.baseAttrs" />
+		
 		<!-- 属性选择 -->
 		<view class="p-2">
 			<view class="rounded border bg-light-secondary">
-				<uni-list-item>
+				<uni-list-item @click="show">
 					<view class="d-flex">
 						<text class="mr-2 text-muted">已选</text>
 						<text>火焰红 64G 标配</text>
@@ -37,6 +40,7 @@
 				</uni-list-item>
 			</view>
 		</view>
+		
 		<!-- 横向滚动评论 
 		     外层 w620*h380
 			 头像 w70*h30
@@ -52,8 +56,17 @@
 				:key="index" :item="item"></common-list>
 			</view>
 		</card>
+		
 		<!-- 底部操作条 -->
 		<bottom-btn></bottom-btn>
+		
+		<!-- 属性筛选框 -->
+		<common-popup :popupClass="popupClass" @hide="hide">
+			<!-- 
+			商品信息(275rpx)
+			图片 180*180 
+			-->
+		</common-popup>
 	</view>
 </template>
 
@@ -67,6 +80,7 @@
 	import card from "@/components/common/card.vue"
 	import commonList from "@/components/common/common-list.vue"
 	import bottomBtn from "@/components/detail/bottom-btn.vue"
+	import commonPopup from "@/components/common/common-popup.vue"
 	
 	const base_media = $H.common.base_media
 	
@@ -79,10 +93,12 @@
 			scrollComments,
 			card,
 			commonList,
-			bottomBtn
+			bottomBtn,
+			commonPopup
 		},
 		data() {
 			return {
+				popupClass: 'none',
 				detail: {
 					title: '',
 					desc: '',
@@ -195,6 +211,16 @@
 			this.__init();
 		},
 		methods: {
+			hide() {
+				this.popupClass = 'hide';
+					
+				setTimeout(() => {
+					this.popupClass = 'none';
+				}, 200)
+			},
+			show() {
+				this.popupClass = 'show';
+			},
 			async __init() {
 				let result = await $H.get('product/3/')
 				if (result) {

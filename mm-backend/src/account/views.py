@@ -119,3 +119,8 @@ class CodeRegOrLoginAPIView(generics.CreateAPIView):
             user = serializer.save()
             token = get_tokens_for_user(user)
             return Response({"msg": "手机验证码注册成功", 'data': {'token': token}}, status=status.HTTP_201_CREATED)
+
+
+# 邮箱登录，生成一个{uuid: email}的缓存，把链接发到用户邮箱，用户点击访问这个链接把uuid(token)进行验证，参考以下链接实现方式
+# https://www.netsarang.com/en/downloading/?token=UjAwVEdwazlwREJvZWxMdFBodXVfUUBNTXBaaXdtT1RQYVJ3WHhrQ1F6RGdR
+# https://login.linode.com/signup/E3E7E763-434B-4CD4-953CB2EAB5E07019

@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-with open(os.path.join(BASE_DIR, 'mm/secret_key.txt')) as f:
+with open(os.path.join(BASE_DIR, 'mm', 'secret_key.txt')) as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -147,7 +147,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'zh-cn'
+LANGUAGE_CODE = 'zh-Hans'
 
 TIME_ZONE = 'Asia/Shanghai'
 
@@ -165,11 +165,11 @@ STATICFILES_STORAGE = 'django_oss_storage.backends.OssStaticStorage'
 DEFAULT_FILE_STORAGE = 'django_oss_storage.backends.OssMediaStorage'
 
 # AliCloud access key ID
-with open(os.path.join(BASE_DIR, 'mm/AccessKeyID.txt')) as f:
+with open(os.path.join(BASE_DIR, 'mm', 'AccessKeyID.txt')) as f:
     OSS_ACCESS_KEY_ID = f.read().strip()
 
 # AliCloud access key secret
-with open(os.path.join(BASE_DIR, 'mm/AccessKeySecret.txt')) as f:
+with open(os.path.join(BASE_DIR, 'mm', 'AccessKeySecret.txt')) as f:
     OSS_ACCESS_KEY_SECRET = f.read().strip()
 
 OSS_EXPIRE_TIME = 30
@@ -287,7 +287,7 @@ LOGGING = {
     },
 }
 
-with open("mm/email_info.json") as f:
+with open(os.path.join(BASE_DIR, 'mm', 'email_info.json')) as f:
     email_info = json.load(f)
 # 设置邮件域名
 EMAIL_HOST = email_info['EMAIL_HOST']
