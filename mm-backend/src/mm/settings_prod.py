@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     # Third apps
+    # 'corsheaders',
     'rest_framework',
     'django_filters',
     'django_oss_storage',
@@ -65,6 +66,7 @@ INSTALLED_APPS = [
     'order',
     'cart',
     'pay',
+    'vue_admin',
 ]
 
 SITE_ID = 1
@@ -72,6 +74,7 @@ SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -80,6 +83,11 @@ MIDDLEWARE = [
     # 'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
+
+# CORS_ORIGIN_ALLOW_ALL = True
+#
+# # 避免跨域访问删除token cookies，不用也暂时没发现问题
+# SESSION_COOKIE_SAMESITE = None
 
 # import re
 #

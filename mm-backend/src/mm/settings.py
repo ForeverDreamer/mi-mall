@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     # Third apps
+    'corsheaders',
     'rest_framework',
     'django_filters',
     # Local apps
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'order',
     'cart',
     'pay',
+    'vue_admin',
 ]
 
 SITE_ID = 1
@@ -60,6 +62,7 @@ SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -68,6 +71,29 @@ MIDDLEWARE = [
     # 'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+# 避免跨域访问删除token cookies，不用也暂时没发现问题
+# SESSION_COOKIE_SAMESITE = None
+
+# CORS_ALLOW_CREDENTIALS = True
+
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:3000',
+#     'http://127.0.0.1:3000'
+# ]
+#
+# from corsheaders.defaults import default_headers
+#
+# CORS_ALLOW_HEADERS = list(default_headers) + [
+#     'Access-Control-Allow-Origin',
+# ]
+#
+# CORS_EXPOSE_HEADER = [
+#     'Access-Control-Allow-Origin',
+# ]
+
 
 ROOT_URLCONF = 'mm.urls'
 

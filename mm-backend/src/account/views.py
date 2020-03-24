@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.contrib.auth import authenticate
 
 from rest_framework.views import APIView
 from rest_framework import generics, permissions
@@ -13,11 +14,12 @@ from rest_framework.exceptions import ParseError, PermissionDenied
 
 from .serializers import (
     SendCodeSerializer,
-    CodeRegOrLoginSerializer
+    CodeRegOrLoginSerializer,
+    AccountLoginSerializer,
 )
 
 from mm.exceptions import ParameterError
-from .utils import get_tokens_for_user
+from .utils import get_tokens_for_user, is_login_too_often
 from analysis.models import Config, SendCodeLog, UserLoginLog, LOGIN_TYPE
 
 User = get_user_model()
@@ -99,12 +101,7 @@ class CodeRegOrLoginAPIView(generics.CreateAPIView):
             #     error_msg = 'token未过期无需更新!'
             #     logger.warning(error_msg)
             #     raise ParseError(detail=error_msg)
-            # 判断该用户当日登录次数是否超过警戒值，是则禁用该用户，返回错误信息，记录错误日志
-            login_times_limit = Config.objects.first().login_times_limit
-            today_times = UserLoginLog.objects.filter(create_time__date=timezone.now().date()).count()
-            if today_times >= login_times_limit:
-                user.is_active = False
-                user.save()
+            if is_login_too_often(user):
                 error_msg = '超过单日登录次数上限，禁用用户!'
                 logger.warning(phone + ' => ' + error_msg)
                 raise PermissionDenied(detail=error_msg)
@@ -119,6 +116,54 @@ class CodeRegOrLoginAPIView(generics.CreateAPIView):
             user = serializer.save()
             token = get_tokens_for_user(user)
             return Response({"msg": "手机验证码注册成功", 'data': {'token': token}}, status=status.HTTP_201_CREATED)
+
+
+# 账号登录(手机/邮箱)
+class AccountLoginAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, *args, **kwargs):
+        serializer = AccountLoginSerializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        username = data.get('username')
+        qs = User.objects.filter(username__exact=username)
+        user = None
+        if qs.exists():
+            user = qs.first()
+        else:
+            qs = User.objects.filter(email__exact=username)
+            if qs.exists():
+                user = qs.first()
+        if user:
+            # 用户是否被禁用
+            if not user.is_active:
+                error_msg = '用户被禁用！'
+                logger.warning(username + ' => ' + error_msg)
+                raise PermissionDenied(detail=error_msg)
+            # 比对密码，用户登录操作
+            password = data.get('password')
+            if not user.check_password(password):
+                error_msg = '用户名或密码错误！'
+                logger.warning(username + ' => ' + error_msg)
+                raise PermissionDenied(detail=error_msg)
+            # 创建token返回给客户端
+            # headers = {'Content-Type': 'application/json'}
+            # data = {'username': user.username, 'password': password}
+            # # token = requests.post(config.BASE_URL+'/api/auth/token/', headers=headers, data=data)
+            # token = requests.post(config.BASE_URL + '/api/auth/token/', data=data).json()
+            if is_login_too_often(user):
+                error_msg = '超过单日登录次数上限，禁用用户!'
+                logger.warning(username + ' => ' + error_msg)
+                raise PermissionDenied(detail=error_msg)
+            token = get_tokens_for_user(user)
+            # 该用户统计信息当日登录次数加1，防止消耗登录token攻击
+            UserLoginLog.objects.create(owner=user, login_type=LOGIN_TYPE[1][0], login_name=username)
+            return Response({'msg': '账号登录成功', 'data': {'token': token}}, status=status.HTTP_200_OK)
+        else:
+            error_msg = '用户不存在，请先注册!'
+            logger.warning(username + ' => ' + error_msg)
+            raise PermissionDenied(detail=error_msg)
 
 
 # 邮箱登录，生成一个{uuid: email}的缓存，把链接发到用户邮箱，用户点击访问这个链接把uuid(token)进行验证，参考以下链接实现方式
