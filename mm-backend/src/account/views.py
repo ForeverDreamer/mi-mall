@@ -10,8 +10,9 @@ from rest_framework.views import APIView
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.exceptions import ParseError, PermissionDenied
+from rest_framework.exceptions import ParseError, NotAuthenticated, AuthenticationFailed, PermissionDenied
 
+from mm.exceptions import MyAuthenticationFailed, MyNotAuthenticated
 from .serializers import (
     SendCodeSerializer,
     CodeRegOrLoginSerializer,
@@ -47,7 +48,7 @@ class SendCodeAPIView(APIView):
         if cache.get(phone):
             error_msg = '您操作太频繁，请稍后再试！'
             logger.warning(phone + ' => ' + error_msg)
-            raise ParseError(detail=error_msg)
+            raise PermissionDenied(detail=error_msg)
         # 判断该手机号当日获取验证码次数是否超过警戒值，是则把手机号加入统计黑名单，返回错误信息，记录错误日志
         send_code_times_limit = Config.objects.first().send_code_times_limit
         today_times = SendCodeLog.objects.filter(create_time__date=timezone.now().date()).count()
@@ -82,7 +83,7 @@ class CodeRegOrLoginAPIView(generics.CreateAPIView):
         if cache.get(phone) != data.get('veri_code'):
             error_msg = '验证码错误!'
             logger.warning(phone + ' => ' + error_msg)
-            raise PermissionDenied(detail=error_msg)
+            raise NotAuthenticated(detail=error_msg)
         # 清除验证码缓存
         cache.delete(phone)
         qs = User.objects.filter(username=phone)
@@ -146,7 +147,7 @@ class AccountLoginAPIView(APIView):
             if not user.check_password(password):
                 error_msg = '用户名或密码错误！'
                 logger.warning(username + ' => ' + error_msg)
-                raise PermissionDenied(detail=error_msg)
+                raise MyAuthenticationFailed(detail=error_msg)
             # 创建token返回给客户端
             # headers = {'Content-Type': 'application/json'}
             # data = {'username': user.username, 'password': password}
@@ -161,9 +162,9 @@ class AccountLoginAPIView(APIView):
             UserLoginLog.objects.create(owner=user, login_type=LOGIN_TYPE[1][0], login_name=username)
             return Response({'msg': '账号登录成功', 'data': {'token': token}}, status=status.HTTP_200_OK)
         else:
-            error_msg = '用户不存在，请先注册!'
+            error_msg = '用户名或密码错误!'
             logger.warning(username + ' => ' + error_msg)
-            raise PermissionDenied(detail=error_msg)
+            raise MyAuthenticationFailed(detail=error_msg)
 
 
 # 邮箱登录，生成一个{uuid: email}的缓存，把链接发到用户邮箱，用户点击访问这个链接把uuid(token)进行验证，参考以下链接实现方式

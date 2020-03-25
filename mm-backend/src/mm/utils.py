@@ -14,9 +14,9 @@ def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
 
     # Now add the HTTP status code to the response.
-    if response is not None and isinstance(exc, MmException):
-        # response.data['status_code'] = response.status_code
-        response.data['error_code'] = exc.get_codes()
+    # if response is not None and isinstance(exc, MmException):
+    #     # response.data['status_code'] = response.status_code
+    #     response.data['error_code'] = exc.get_codes()
 
     return response
 
