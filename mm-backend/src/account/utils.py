@@ -1,17 +1,26 @@
 from django.utils import timezone
 
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 from analysis.models import Config, UserLoginLog
 
 
 def get_tokens_for_user(user):
-    refresh = RefreshToken.for_user(user)
+    access_token = AccessToken.for_user(user)
 
     return {
-        'refresh': str(refresh),
-        'access': str(refresh.access_token),
+        'exp': access_token.payload['exp'],
+        'access': str(access_token),
     }
+
+
+# def get_tokens_for_user(user):
+#     refresh = RefreshToken.for_user(user)
+#
+#     return {
+#         'refresh': str(refresh),
+#         'access': str(refresh.access_token),
+#     }
 
 
 # 判断该用户当日登录次数是否超过警戒值，是则禁用该用户，返回错误信息，记录错误日志

@@ -30,9 +30,9 @@ from .views import export_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include(('account.urls', 'account'), namespace='account')),
-    # 不用直接暴露Token接口，要通过views对用户禁用，用户主动登出等情况加以验证
-    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # 不要直接暴露Token接口，要通过views对用户禁用，用户主动登出等情况加以验证
+    # path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('product/', include(('product.urls', 'product'), namespace='product')),
     path('cart/', include(('cart.urls', 'cart'), namespace='cart')),
