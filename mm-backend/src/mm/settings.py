@@ -169,6 +169,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "static_root")
 
+# http://127.0.0.1:8000/static/Kitsunebi_v1.8.0，django会自动搜索匹配download目录下的文件
+STATICFILES_DIRS = [
+    os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "download"),
+]
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "media_root")
 
