@@ -317,6 +317,7 @@ LOGGING = {
     },
 }
 
+# 其实不需要用json文件，直接创建email_info.py，使用dict就行
 with open(os.path.join(BASE_DIR, 'mm', 'email_info.json')) as f:
     email_info = json.load(f)
 # 设置邮件域名
