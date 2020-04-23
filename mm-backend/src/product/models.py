@@ -103,8 +103,8 @@ class SecondCategory(models.Model):
     link_url = models.CharField(blank=True, max_length=50)
     img_height = models.IntegerField(blank=True)
     img_width = models.IntegerField(blank=True)
-    cover_img = models.ImageField(upload_to=second_category_image_upload, height_field='img_height',
-                                  width_field='img_width')
+    cover_img = models.ImageField(upload_to=second_category_image_upload, width_field='img_width',
+                                  height_field='img_height')
     order = models.IntegerField(default=1)
     active = models.BooleanField(default=True)
     update_time = models.DateTimeField(auto_now=True)

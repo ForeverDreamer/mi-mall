@@ -38,6 +38,7 @@ urlpatterns = [
     path('cart/', include(('cart.urls', 'cart'), namespace='cart')),
     path('order/', include(('order.urls', 'order'), namespace='order')),
     path('pay/', include(('pay.urls', 'pay'), namespace='pay')),
+    # path('vue_admin/', include(('vue_admin.urls', 'vue_admin'), namespace='vue_admin')),
     path('export/', export_view, name='export'),
 ]
 
