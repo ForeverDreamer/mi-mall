@@ -18,6 +18,8 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.flatpages import views
+# from django.views.generic import TemplateView
+# from django.views.generic import RedirectView
 
 # from rest_framework_simplejwt.views import (
 #     TokenObtainPairView,
@@ -28,6 +30,7 @@ from django.contrib.flatpages import views
 from .views import export_view
 
 urlpatterns = [
+    # path('', TemplateView.as_view(template_name='index.html')),
     path('admin/', admin.site.urls),
     path('account/', include(('account.urls', 'account'), namespace='account')),
     # 不要直接暴露Token接口，要通过views对用户禁用，用户主动登出等情况加以验证
@@ -40,6 +43,7 @@ urlpatterns = [
     path('pay/', include(('pay.urls', 'pay'), namespace='pay')),
     # path('vue_admin/', include(('vue_admin.urls', 'vue_admin'), namespace='vue_admin')),
     path('export/', export_view, name='export'),
+    # path('', RedirectView.as_view(permanent=True, url='/index.html')),
 ]
 
 if settings.DEBUG:

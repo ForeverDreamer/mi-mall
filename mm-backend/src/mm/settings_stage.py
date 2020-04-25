@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
-# settings_debug.py
+# settings_stage.py
 
 import os
 import json
@@ -24,12 +24,23 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'kp5@jf0@ymz9yi9md@2f+s3@gqc34@^%zc-5nxpaqfge5fiy$j'
+with open(os.path.join(BASE_DIR, 'mm', 'secret_key.txt')) as f:
+    SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_SECURE = True
+
+# SERVER_EMAIL = 'root@localhost'
+#
+# ADMINS = [('admin', '499361328@qq.com')]
+
+# MANAGERS = [('admin', '499361328@qq.com')]
+
+ALLOWED_HOSTS = ['.itman.icu']
 
 PROJECT_NAME = 'mm'
 
@@ -46,9 +57,10 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     # Third apps
-    'corsheaders',
+    # 'corsheaders',
     'rest_framework',
     'django_filters',
+    'django_oss_storage',
     # Local apps
     'account',
     'analysis',
@@ -64,7 +76,7 @@ SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -74,35 +86,24 @@ MIDDLEWARE = [
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
-
-# 避免跨域访问删除token cookies，不用也暂时没发现问题
+# CORS_ORIGIN_ALLOW_ALL = True
+#
+# # 避免跨域访问删除token cookies，不用也暂时没发现问题
 # SESSION_COOKIE_SAMESITE = None
 
-# CORS_ALLOW_CREDENTIALS = True
-
-# CORS_ORIGIN_WHITELIST = [
-#     'http://localhost:3000',
-#     'http://127.0.0.1:3000'
-# ]
+# import re
 #
-# from corsheaders.defaults import default_headers
-#
-# CORS_ALLOW_HEADERS = list(default_headers) + [
-#     'Access-Control-Allow-Origin',
+# IGNORABLE_404_URLS = [
+#     re.compile(r'^/apple-touch-icon.*\.png$'),
+#     re.compile(r'^/favicon\.ico$'),
+#     re.compile(r'^/robots\.txt$'),
 # ]
-#
-# CORS_EXPOSE_HEADER = [
-#     'Access-Control-Allow-Origin',
-# ]
-
 
 ROOT_URLCONF = 'mm.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 'DIRS': [os.path.join(BASE_DIR, 'assets', 'static')],
         'DIRS': [os.path.join(BASE_DIR, 'mm', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -155,7 +156,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'zh-cn'
+LANGUAGE_CODE = 'zh-Hans'
 
 TIME_ZONE = 'Asia/Shanghai'
 
@@ -168,41 +169,53 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
+STATICFILES_STORAGE = 'django_oss_storage.backends.OssStaticStorage'
 
+DEFAULT_FILE_STORAGE = 'django_oss_storage.backends.OssMediaStorage'
+
+# AliCloud access key ID
+with open(os.path.join(BASE_DIR, 'mm', 'AccessKeyID.txt')) as f:
+    OSS_ACCESS_KEY_ID = f.read().strip()
+
+# AliCloud access key secret
+with open(os.path.join(BASE_DIR, 'mm', 'AccessKeySecret.txt')) as f:
+    OSS_ACCESS_KEY_SECRET = f.read().strip()
+
+OSS_EXPIRE_TIME = 30
+
+# The name of the bucket to store files in
+OSS_BUCKET_NAME = 'itman-mi-mall'
+
+# The URL of AliCloud OSS endpoint
+# Refer https://www.alibabacloud.com/help/zh/doc-detail/31837.htm for OSS Region & Endpoint
+OSS_ENDPOINT = 'oss-cn-qingdao.aliyuncs.com'
+
+# The default location for your files
+MEDIA_URL = '/media/'
+
+# The default location for your static files
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'assets', "static")
 
-# http://127.0.0.1:8000/static/Kitsunebi_v1.8.0，django会自动搜索匹配download目录下的文件
 STATICFILES_DIRS = [
     os.path.join(os.path.dirname(BASE_DIR), "frontend"),
 ]
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'assets', 'media')
 
 
 CACHES = {
     'default': {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://cache_db:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
-    },
-    'file': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': os.path.join(os.path.dirname(BASE_DIR), 'temp'),
     }
 }
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-        # 'content.permissions.IsBindPhone',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',  # 为测试方便使用，生成上线时关闭
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': (
@@ -219,7 +232,7 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
 
@@ -295,21 +308,22 @@ LOGGING = {
     },
     'loggers': {
         'mm': {
-            'handlers': ['mm_file', 'mail_admins'],
+            'handlers': ['mm_file'],
             # 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             'level': 'WARNING',
             'propagate': True,
         },
         'django': {
-            'handlers': ['django_file', 'django_console', 'mail_admins'],
-            'level': 'INFO',
+            'handlers': ['django_file'],
+            'level': 'ERROR',
             # 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             'propagate': True,
         },
     },
 }
 
-with open("mm/email_info.json") as f:
+# 其实不需要用json文件，直接创建email_info.py，使用dict就行
+with open(os.path.join(BASE_DIR, 'mm', 'email_info.json')) as f:
     email_info = json.load(f)
 # 设置邮件域名
 EMAIL_HOST = email_info['EMAIL_HOST']

@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+# # settings_prod.py
+
 import os
 import json
 from datetime import timedelta
@@ -194,6 +196,10 @@ MEDIA_URL = '/media/'
 
 # The default location for your static files
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(os.path.dirname(BASE_DIR), "frontend"),
+]
 
 
 CACHES = {

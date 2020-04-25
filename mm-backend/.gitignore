@@ -4,7 +4,7 @@ __pycache__
 .ipynb_checkpoints
 .pytest_cache
 temp/
-static_in_env/
+assets/
 log/
 
 # pycharm proj conf
