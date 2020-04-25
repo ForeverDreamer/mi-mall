@@ -36,8 +36,8 @@ class SendCodeLog(models.Model):
 # 用户登录日志
 class UserLoginLog(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    login_type = models.CharField(max_length=20, choices=LOGIN_TYPE)
-    login_name = models.CharField(max_length=20)
+    login_type = models.CharField(max_length=100, choices=LOGIN_TYPE)
+    login_name = models.CharField(max_length=100)
     create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
