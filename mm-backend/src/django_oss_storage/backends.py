@@ -236,7 +236,6 @@ class OssMediaStorage(OssStorage):
 class OssStaticStorage(OssStorage):
     def __init__(self):
         self.location = settings.STATIC_URL
-        print('self.location', self.location)
         logger().info("locatin: %s", self.location)
         super(OssStaticStorage, self).__init__()
 

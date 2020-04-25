@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
-# settings_stage.py
+# # settings_stage.py
 
 import os
 import json
@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     # Third apps
-    # 'corsheaders',
+    'corsheaders',
     'rest_framework',
     'django_filters',
     'django_oss_storage',
@@ -76,7 +76,7 @@ SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    # 'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -86,8 +86,8 @@ MIDDLEWARE = [
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
 
-# CORS_ORIGIN_ALLOW_ALL = True
-#
+CORS_ORIGIN_ALLOW_ALL = True
+
 # # 避免跨域访问删除token cookies，不用也暂时没发现问题
 # SESSION_COOKIE_SAMESITE = None
 
@@ -184,7 +184,7 @@ with open(os.path.join(BASE_DIR, 'mm', 'AccessKeySecret.txt')) as f:
 OSS_EXPIRE_TIME = 30
 
 # The name of the bucket to store files in
-OSS_BUCKET_NAME = 'itman-mi-mall'
+OSS_BUCKET_NAME = 'itman-nuxt-app'
 
 # The URL of AliCloud OSS endpoint
 # Refer https://www.alibabacloud.com/help/zh/doc-detail/31837.htm for OSS Region & Endpoint
@@ -194,7 +194,7 @@ OSS_ENDPOINT = 'oss-cn-qingdao.aliyuncs.com'
 MEDIA_URL = '/media/'
 
 # The default location for your static files
-STATIC_URL = '/static/'
+STATIC_URL = '/'
 
 STATICFILES_DIRS = [
     os.path.join(os.path.dirname(BASE_DIR), "frontend"),
@@ -203,11 +203,8 @@ STATICFILES_DIRS = [
 
 CACHES = {
     'default': {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://cache_db:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(os.path.dirname(BASE_DIR), 'temp'),
     }
 }
 

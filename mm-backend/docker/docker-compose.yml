@@ -11,6 +11,8 @@ services:
     volumes:
       - "~/data:/var/lib/mysql"
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    # ports:
+      # - '3306:3306'
   web:
     build:
       context: ..
@@ -30,6 +32,7 @@ services:
               # "--ssl-ca-certificate-file", "./letsencrypt/live/itman.icu/cert.pem",
               # "--ssl-verify-client", "/admin/",
               # "--document-root", "/app/static_in_env/",
+              # "--url-alias", "/", "static/index.html",
               # "--url-alias", "/static/", "/app/static_in_env/static_root/",
               # "--url-alias", "/media/", "/app/static_in_env/media_root/",
               "--port", "8080"]
