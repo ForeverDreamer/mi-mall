@@ -3,6 +3,8 @@ from django.utils import timezone
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 from analysis.models import Config, UserLoginLog
+from vue_admin.models import AdminInfo, Menu
+from vue_admin.serializers import AdminInfoSerializer, MenuSerializer, SubmenuSerializer
 
 
 def get_tokens_for_user(user):
@@ -32,3 +34,37 @@ def is_login_too_often(user):
         user.save()
         return True
     return False
+
+
+def admin_login(user):
+    if not user.is_staff:
+        return
+    menus = Menu.objects.all()
+    # tmp_menus = menus.values()
+    admin_info = AdminInfoSerializer(AdminInfo.objects.by_user(user).first()).data
+    tmp_menus = []
+    for menu in menus:
+        if user in menu.user_set.all():
+            tmp_submenus = []
+            for submenu in menu.submenus.all():
+                if user in submenu.user_set.all():
+                    tmp_submenus.append(SubmenuSerializer(submenu).data)
+            tmp_menu = MenuSerializer(menu).data
+            tmp_menu['submenus'] = tmp_submenus
+            tmp_menus.append(tmp_menu)
+    nav = {
+        'menus': tmp_menus,
+        'admin_info': admin_info
+    }
+    # for menu, nav_menu in zip(menus, nav['menus']):
+    #     # menu.submenus = menu.submenus.by_user(user)
+    #     submenus = menu.submenus.all()
+    #     temp_submenus = []
+    #     for submenu in submenus:
+    #         if user in submenu.user_set.all():
+    #             temp_submenus.append(SubmenuSerializer(submenu).data)
+    #     nav_menu['submenus'] = temp_submenus
+    # nav_menu = NavMenuSerializer(NavMenu.objects.first()).data
+    # if not user.is_superuser:
+    #     nav_menu = NavMenuSerializer(NavMenu.objects.first()).data
+    return nav

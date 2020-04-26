@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import AdminInfo, NavMenu, Menu, Submenu
+from .models import AdminInfo, Menu, Submenu
 
 
 class AdminInfoSerializer(serializers.ModelSerializer):
@@ -8,6 +8,7 @@ class AdminInfoSerializer(serializers.ModelSerializer):
         model = AdminInfo
         fields = [
             'name',
+            'active_index',
             'avatar'
         ]
 
@@ -23,7 +24,7 @@ class SubmenuSerializer(serializers.ModelSerializer):
 
 
 class MenuSerializer(serializers.ModelSerializer):
-    submenus = SubmenuSerializer(many=True, read_only=True)
+    # submenus = SubmenuSerializer(many=True, read_only=True)
 
     class Meta:
         model = Menu
@@ -31,18 +32,23 @@ class MenuSerializer(serializers.ModelSerializer):
             'name',
             'url',
             'sub_active_index',
-            'submenus'
+            # 'submenus'
         ]
 
 
-class NavMenuSerializer(serializers.ModelSerializer):
-    menus = MenuSerializer(many=True, read_only=True)
-    admininfo = AdminInfoSerializer(read_only=True)
+# class NavMenuSerializer(serializers.ModelSerializer):
+#     menus = MenuSerializer(many=True, read_only=True)
+#     admininfo = AdminInfoSerializer(read_only=True)
+#
+#     class Meta:
+#         model = NavMenu
+#         fields = [
+#             'active_index',
+#             'menus',
+#             'admininfo',
+#         ]
 
-    class Meta:
-        model = NavMenu
-        fields = [
-            'active_index',
-            'menus',
-            'admininfo',
-        ]
+
+class NavSerializer(serializers.Serializer):
+    # menus = MenuSerializer(many=True, read_only=True)
+    admin_info = AdminInfoSerializer(read_only=True)

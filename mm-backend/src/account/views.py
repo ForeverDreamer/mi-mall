@@ -12,8 +12,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import ParseError, NotAuthenticated, AuthenticationFailed, PermissionDenied
 
-from vue_admin.serializers import NavMenuSerializer
-from vue_admin.models import NavMenu
 from mm.exceptions import MyAuthenticationFailed, MyNotAuthenticated
 from .serializers import (
     SendCodeSerializer,
@@ -22,7 +20,7 @@ from .serializers import (
 )
 
 from mm.exceptions import ParameterError
-from .utils import get_tokens_for_user, is_login_too_often
+from .utils import get_tokens_for_user, is_login_too_often, admin_login
 from analysis.models import Config, SendCodeLog, UserLoginLog, LOGIN_TYPE
 
 User = get_user_model()
@@ -162,9 +160,12 @@ class AccountLoginAPIView(APIView):
             token = get_tokens_for_user(user)
             # 该用户统计信息当日登录次数加1，防止消耗登录token攻击
             UserLoginLog.objects.create(owner=user, login_type=LOGIN_TYPE[1][0], login_name=username)
-            nav_menu = NavMenuSerializer(NavMenu.objects.first()).data
-            # print(nav_menu)
-            return Response({'msg': '账号登录成功', 'data': {'token': token, 'navMenu': nav_menu}}, status=status.HTTP_200_OK)
+            nav_menu = admin_login(user)
+            if nav_menu:
+                data = {'token': token, 'navMenu': nav_menu}
+            else:
+                data = {'token': token}
+            return Response({'msg': '账号登录成功', 'data': data}, status=status.HTTP_200_OK)
         else:
             error_msg = '用户名或密码错误!'
             logger.warning(username + ' => ' + error_msg)
