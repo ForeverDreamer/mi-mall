@@ -198,9 +198,9 @@ MEDIA_URL = '/media/'
 # STATIC_URL = '/'
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    os.path.join(os.path.dirname(BASE_DIR), "frontend"),
-]
+# STATICFILES_DIRS = [
+#     os.path.join(os.path.dirname(BASE_DIR), "frontend"),
+# ]
 
 
 CACHES = {

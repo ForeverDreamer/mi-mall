@@ -39,7 +39,7 @@ services:
               # "--ssl-verify-client", "/admin/",
               # "--document-root", "/app/static_in_env/",
               # "--url-alias", "/", "static/index.html",
-              # "--url-alias", "/static/", "/app/static_in_env/static_root/",
+              "--url-alias", "/d/", "/app/download/",
               # "--url-alias", "/media/", "/app/static_in_env/media_root/",
               "--port", "8080"]
     ports:
