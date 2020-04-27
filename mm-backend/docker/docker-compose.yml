@@ -17,6 +17,7 @@ services:
     build:
       context: ..
       dockerfile: docker/frontend.dockerfile
+    ports:
     - "80:80"
   web_backend:
     build:

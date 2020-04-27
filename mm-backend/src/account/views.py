@@ -165,7 +165,7 @@ class AccountLoginAPIView(APIView):
                 data = {'token': token, 'navMenu': nav_menu}
             else:
                 data = {'token': token}
-            print(data)
+            # print(data)
             return Response({'msg': '账号登录成功', 'data': data}, status=status.HTTP_200_OK)
         else:
             error_msg = '用户名或密码错误!'
