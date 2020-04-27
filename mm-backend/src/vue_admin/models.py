@@ -65,8 +65,8 @@ class AdminInfo(models.Model):
     objects = AdminInfoManager()
 
     class Meta:
-        verbose_name = 'AdminInfo'
-        verbose_name_plural = 'AdminInfos'
+        verbose_name = '管理员信息'
+        verbose_name_plural = '管理员信息'
 
     def __str__(self):
         return self.owner.username
@@ -109,8 +109,8 @@ class Menu(models.Model):
     objects = MenuManager()
 
     class Meta:
-        verbose_name = 'Menu'
-        verbose_name_plural = 'Menus'
+        verbose_name = '导航目录'
+        verbose_name_plural = '导航目录'
 
     def __str__(self):
         return self.name

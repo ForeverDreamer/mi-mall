@@ -43,18 +43,23 @@ def admin_login(user):
     # tmp_menus = menus.values()
     admin_info = AdminInfoSerializer(AdminInfo.objects.by_user(user).first()).data
     tmp_menus = []
+    urls = []
     for menu in menus:
         if user in menu.user_set.all():
             tmp_submenus = []
             for submenu in menu.submenus.all():
                 if user in submenu.user_set.all():
-                    tmp_submenus.append(SubmenuSerializer(submenu).data)
+                    tmp_submenu = SubmenuSerializer(submenu).data
+                    urls.append(tmp_submenu['url'])
+                    tmp_submenus.append(tmp_submenu)
             tmp_menu = MenuSerializer(menu).data
+            # urls.append(tmp_menu['url'])
             tmp_menu['submenus'] = tmp_submenus
             tmp_menus.append(tmp_menu)
     nav = {
         'menus': tmp_menus,
-        'admin_info': admin_info
+        'admin_info': admin_info,
+        'permitted_routes': urls,
     }
     # for menu, nav_menu in zip(menus, nav['menus']):
     #     # menu.submenus = menu.submenus.by_user(user)

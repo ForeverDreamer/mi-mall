@@ -50,13 +50,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     # Local apps
-    'account',
-    'analysis',
-    'product',
-    'order',
-    'cart',
-    'pay',
-    'vue_admin',
+    'account.apps.AccountConfig',
+    'analysis.apps.AnalysisConfig',
+    'product.apps.ProductConfig',
+    'order.apps.OrderConfig',
+    'cart.apps.CartConfig',
+    'pay.apps.PayConfig',
+    'vue_admin.apps.VueAdminConfig',
 ]
 
 SITE_ID = 1
@@ -155,7 +155,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'zh-cn'
+LANGUAGE_CODE = 'zh-Hans'
 
 TIME_ZONE = 'Asia/Shanghai'
 
@@ -169,6 +169,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+# STATIC_URL = '/'
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'assets', "static")
 

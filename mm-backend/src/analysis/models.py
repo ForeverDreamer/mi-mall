@@ -15,8 +15,8 @@ class Config(models.Model):
     login_times_limit = models.PositiveIntegerField()
 
     class Meta:
-        verbose_name = 'Config'
-        verbose_name_plural = 'Configs'
+        verbose_name = '配置'
+        verbose_name_plural = '配置'
 
 
 # 发送验证码日志
@@ -26,8 +26,8 @@ class SendCodeLog(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'SendCodeLog'
-        verbose_name_plural = 'SendCodeLogs'
+        verbose_name = '发送验证码日志'
+        verbose_name_plural = '发送验证码日志'
 
     def __str__(self):
         return self.phone
@@ -41,8 +41,8 @@ class UserLoginLog(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'UserLoginLog'
-        verbose_name_plural = 'UserLoginLogs'
+        verbose_name = '用户登录日志'
+        verbose_name_plural = '用户登录日志'
 
     def __str__(self):
         return self.owner.username

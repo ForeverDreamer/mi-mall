@@ -13,8 +13,8 @@ class Wechat(models.Model):
     order_no = models.CharField(max_length=50)
 
     class Meta:
-        verbose_name = 'Wechat'
-        verbose_name_plural = 'Wechats'
+        verbose_name = '微信'
+        verbose_name_plural = '微信'
 
     def __str__(self):
         return '{}_{}'.format(self.order_no, self.status)

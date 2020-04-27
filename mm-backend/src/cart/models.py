@@ -37,6 +37,10 @@ class Cart(models.Model):
 
     objects = CartManager()
 
+    class Meta:
+        verbose_name = '用户的购物车'
+        verbose_name_plural = '用户的购物车'
+
     def __str__(self):
         return 'cart_{}'.format(self.owner.username)
 
@@ -51,8 +55,8 @@ class ProductCartItem(models.Model):
 
     class Meta:
         unique_together = ['cart', 'sku']
-        verbose_name = 'ProductCartItem'
-        verbose_name_plural = 'ProductCartItems'
+        verbose_name = '加入的购物车商品'
+        verbose_name_plural = '加入的购物车商品'
 
     def __str__(self):
         return '{}_{}_{}'.format(self.sku.product.title, self.sku.version, self.sku.color)

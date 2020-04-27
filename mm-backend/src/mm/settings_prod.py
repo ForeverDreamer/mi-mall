@@ -195,7 +195,8 @@ OSS_ENDPOINT = 'oss-cn-qingdao.aliyuncs.com'
 MEDIA_URL = '/media/'
 
 # The default location for your static files
-STATIC_URL = '/'
+# STATIC_URL = '/'
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     os.path.join(os.path.dirname(BASE_DIR), "frontend"),

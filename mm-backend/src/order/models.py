@@ -107,8 +107,8 @@ class ShippingAddress(models.Model):
     objects = ShippingAddressManager()
 
     class Meta:
-        verbose_name = 'ShippingAddress'
-        verbose_name_plural = 'ShippingAddresses'
+        verbose_name = '收货地址'
+        verbose_name_plural = '收货地址'
 
     def __str__(self):
         return '{}_{}_{}'.format(self.owner.username, self.name, self.street)
@@ -146,8 +146,8 @@ class Coupon(models.Model):
     objects = CouponManager()
 
     class Meta:
-        verbose_name = 'Coupon'
-        verbose_name_plural = 'Coupons'
+        verbose_name = '优惠券'
+        verbose_name_plural = '优惠券'
 
     def __str__(self):
         return self.title
@@ -162,8 +162,8 @@ class ReceiveCoupon(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'ReceiveCoupon'
-        verbose_name_plural = 'ReceiveCoupons'
+        verbose_name = '用户领取的优惠券'
+        verbose_name_plural = '用户领取的优惠券'
 
     def __str__(self):
         return '{}_{}'.format(self.owner.username, self.coupon.title)
@@ -212,8 +212,8 @@ class Order(models.Model):
     objects = OrderManager()
 
     class Meta:
-        verbose_name = 'Order'
-        verbose_name_plural = 'Orders'
+        verbose_name = '订单'
+        verbose_name_plural = '订单'
 
     def __str__(self):
         return '{}_{}'.format(self.owner.username, self.status)
@@ -229,8 +229,8 @@ class OrderItem(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'OrderItem'
-        verbose_name_plural = 'OrderItems'
+        verbose_name = '订单里的商品'
+        verbose_name_plural = '订单里的商品'
 
     def __str__(self):
         return '{}_{}_{}_{}'.format(self.id, self.sku.product.title, self.sku.version, self.sku.color)
@@ -246,8 +246,8 @@ class OrderReview(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'OrderReview'
-        verbose_name_plural = 'OrderReviews'
+        verbose_name = '订单评价'
+        verbose_name_plural = '订单评价'
 
 
 # 退款信息
@@ -261,8 +261,8 @@ class Refund(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Refund'
-        verbose_name_plural = 'Refunds'
+        verbose_name = '退款信息'
+        verbose_name_plural = '退款信息'
 
     def __str__(self):
         return '{}_{}'.format(self.refund_no, self.status)
@@ -278,8 +278,8 @@ class RefundReview(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'RefundReview'
-        verbose_name_plural = 'RefundReviews'
+        verbose_name = '退款评价'
+        verbose_name_plural = '退款评价'
 
 
 # 物流信息
@@ -294,8 +294,8 @@ class Shipping(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Shipping'
-        verbose_name_plural = 'Shippings'
+        verbose_name = '物流信息'
+        verbose_name_plural = '物流信息'
 
 
 # 物流评价
@@ -308,5 +308,5 @@ class ShippingReview(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'ShippingReview'
-        verbose_name_plural = 'ShippingReviews'
+        verbose_name = '物流评价'
+        verbose_name_plural = '物流评价'

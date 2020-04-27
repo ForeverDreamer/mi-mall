@@ -71,6 +71,10 @@ class FirstCategory(models.Model):
 
     objects = FirstCategoryManager()
 
+    class Meta:
+        verbose_name = '一级分类'
+        verbose_name_plural = '一级分类'
+
     def __str__(self):
         return self.title
 
@@ -112,6 +116,10 @@ class SecondCategory(models.Model):
 
     objects = SecondCategoryManager()
 
+    class Meta:
+        verbose_name = '二级分类'
+        verbose_name_plural = '二级分类'
+
     def __str__(self):
         return '{}_{}'.format(self.first_category.title, self.title)
 
@@ -151,6 +159,10 @@ class ThemeActivity(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
 
     objects = ThemeActivityManager()
+
+    class Meta:
+        verbose_name = '主题活动'
+        verbose_name_plural = '主题活动'
 
     def __str__(self):
         return self.title
@@ -197,6 +209,10 @@ class Product(models.Model):
     is_active = models.BooleanField(default=True)
 
     objects = ProductManager()
+
+    class Meta:
+        verbose_name = '商品'
+        verbose_name_plural = '商品'
 
     def __str__(self):
         return self.title
@@ -294,8 +310,8 @@ class AdProduct(models.Model):
                               blank=True, null=True)
 
     class Meta:
-        verbose_name = 'AdProduct'
-        verbose_name_plural = 'AdProducts'
+        verbose_name = '广告推荐'
+        verbose_name_plural = '广告推荐'
 
     def __str__(self):
         return self.location
