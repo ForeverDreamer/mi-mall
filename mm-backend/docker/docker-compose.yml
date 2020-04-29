@@ -38,9 +38,7 @@ services:
               # "--ssl-ca-certificate-file", "./letsencrypt/live/itman.icu/cert.pem",
               # "--ssl-verify-client", "/admin/",
               # "--document-root", "/app/static_in_env/",
-              # "--url-alias", "/", "static/index.html",
               "--url-alias", "/d/", "/app/download/",
-              # "--url-alias", "/media/", "/app/static_in_env/media_root/",
               "--port", "8080"]
     ports:
       - "8080:8080"

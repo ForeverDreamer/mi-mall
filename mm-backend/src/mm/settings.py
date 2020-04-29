@@ -102,8 +102,7 @@ ROOT_URLCONF = 'mm.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 'DIRS': [os.path.join(BASE_DIR, 'assets', 'static')],
-        'DIRS': [os.path.join(BASE_DIR, 'mm', 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -175,7 +174,8 @@ STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'assets', "static")
 
 # http://127.0.0.1:8000/static/Kitsunebi_v1.8.0，django会自动搜索匹配download目录下的文件
 STATICFILES_DIRS = [
-    os.path.join(os.path.dirname(BASE_DIR), "frontend"),
+    # os.path.join(os.path.dirname(BASE_DIR), "frontend"),
+    os.path.join(BASE_DIR, "static"),
 ]
 
 MEDIA_URL = '/media/'

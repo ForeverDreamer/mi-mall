@@ -208,6 +208,8 @@ class Product(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
+    # 可以不定义ProductManager
+    # objects = ProductQuerySet.as_manager()
     objects = ProductManager()
 
     class Meta:

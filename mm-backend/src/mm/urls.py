@@ -27,7 +27,7 @@ from django.contrib.flatpages import views
 #     TokenVerifyView,
 # )
 
-from .views import export_view
+from .views import home_view, export_view
 
 urlpatterns = [
     # path('', TemplateView.as_view(template_name='index.html')),
@@ -43,6 +43,7 @@ urlpatterns = [
     path('order/', include(('order.urls', 'order'), namespace='order')),
     path('pay/', include(('pay.urls', 'pay'), namespace='pay')),
     # path('vue_admin/', include(('vue_admin.urls', 'vue_admin'), namespace='vue_admin')),
+    path('', home_view, name='home'),
     path('export/', export_view, name='export'),
 ]
 
