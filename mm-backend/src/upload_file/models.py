@@ -1,9 +1,9 @@
 import uuid
-import re
+# import re
 
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.db.models.signals import pre_save, post_save
+# from django.db.models.signals import pre_save, post_save
 
 from mm.utils import get_filename_ext
 
@@ -12,13 +12,15 @@ User = get_user_model()
 # upload_file_name = ''
 
 
+# 上传到阿里云oss过程中经常报文件太大或超时估计是ecs服务器性能的问题，购买性能好一点的ecs应该就没问题了，有问题再问阿里云客服
 def file_upload(instance, filename):
     # global upload_file_name
     # upload_file_name = filename
-    # 不知道为什么，title就是不能修改，size和active都没有问题，难道是CharField的问题，TextField也不行，暂时只能用pre_save处理
-    instance.title = filename
+    # 不知道为什么，title就是不能修改，size和active都没有问题，难道是CharField的问题，TextField也不行，
+    # FileAdmin里用save_model()里边修改更好，虽然pre_save也能处理
+    # instance.title = filename
     # instance.active = False
-    instance.size = instance.upload_file.size
+    # instance.size = instance.upload_file.size
     new_filename = uuid.uuid4()
     name, ext = get_filename_ext(filename)
     file_name = '{new_filename}{ext}'.format(new_filename=new_filename, ext=ext)
@@ -42,19 +44,23 @@ class FileItem(models.Model):
         return self.title
 
     @property
+    def file_path(self):
+        return self.upload_file
+
+    @property
     def kb_size(self):
         return '{}(kb)'.format(str(self.size // 1000))
 
 
-def file_pre_upload_receiver(sender, instance, *args, **kwargs):
-    pattern = re.compile(r'^upload/')
-    # 区分是上传文件自动修改，还是用户直接编辑title字段修改
-    uploading = not re.search(pattern, instance.upload_file.name)
-    if uploading:
-        instance.title = instance.upload_file.name
-
-
-pre_save.connect(file_pre_upload_receiver, sender=FileItem)
+# def file_pre_upload_receiver(sender, instance, *args, **kwargs):
+#     pattern = re.compile(r'^upload/')
+#     # 区分是上传文件自动修改，还是用户直接编辑title字段修改
+#     uploading = not re.search(pattern, instance.upload_file.name)
+#     if uploading:
+#         instance.title = instance.upload_file.name
+#
+#
+# pre_save.connect(file_pre_upload_receiver, sender=FileItem)
 
 
 # def file_post_upload_receiver(sender, instance, created, *args, **kwargs):

@@ -4,11 +4,11 @@ set -x
 
 set -eo pipefail
 
-#PROJ_DIR=git_repos/mi-mall
-#
-#cd ${HOME}/${PROJ_DIR}
-#
-#git pull
+PROJ_DIR=git_repos/mi-mall
+
+cd ${HOME}/${PROJ_DIR}
+
+# git pull
 
 if [[ -d ${HOME}/mm-backend ]]; then
     rm -rf ${HOME}/mm-backend
