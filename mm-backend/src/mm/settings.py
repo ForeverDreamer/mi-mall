@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'cart.apps.CartConfig',
     'pay.apps.PayConfig',
     'vue_admin.apps.VueAdminConfig',
+    'upload_file.apps.UploadFileConfig',
 ]
 
 SITE_ID = 1

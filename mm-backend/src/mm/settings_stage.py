@@ -62,13 +62,14 @@ INSTALLED_APPS = [
     'django_filters',
     'django_oss_storage',
     # Local apps
-    'account',
-    'analysis',
-    'product',
-    'order',
-    'cart',
-    'pay',
-    'vue_admin',
+    'account.apps.AccountConfig',
+    'analysis.apps.AnalysisConfig',
+    'product.apps.ProductConfig',
+    'order.apps.OrderConfig',
+    'cart.apps.CartConfig',
+    'pay.apps.PayConfig',
+    'vue_admin.apps.VueAdminConfig',
+    'upload_file.apps.UploadFileConfig',
 ]
 
 SITE_ID = 1
