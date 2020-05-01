@@ -74,6 +74,9 @@ class FirstCategory(models.Model):
     class Meta:
         verbose_name = '一级分类'
         verbose_name_plural = '一级分类'
+        indexes = [
+            models.Index(fields=['title', ]),
+        ]
 
     def __str__(self):
         return self.title
@@ -119,6 +122,9 @@ class SecondCategory(models.Model):
     class Meta:
         verbose_name = '二级分类'
         verbose_name_plural = '二级分类'
+        indexes = [
+            models.Index(fields=['title', 'first_category']),
+        ]
 
     def __str__(self):
         return '{}_{}'.format(self.first_category.title, self.title)
@@ -163,6 +169,9 @@ class ThemeActivity(models.Model):
     class Meta:
         verbose_name = '主题活动'
         verbose_name_plural = '主题活动'
+        indexes = [
+            models.Index(fields=['title', ]),
+        ]
 
     def __str__(self):
         return self.title
@@ -215,6 +224,9 @@ class Product(models.Model):
     class Meta:
         verbose_name = '商品'
         verbose_name_plural = '商品'
+        indexes = [
+            models.Index(fields=['title', 'desc', 'first_category', 'theme_activity']),
+        ]
 
     def __str__(self):
         return self.title

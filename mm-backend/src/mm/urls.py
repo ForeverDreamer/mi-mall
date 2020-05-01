@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 from django.contrib.flatpages import views
 # from django.views.generic import TemplateView
 # from django.views.generic import RedirectView
+from django.contrib.staticfiles.views import serve
 
 # from rest_framework_simplejwt.views import (
 #     TokenObtainPairView,
@@ -32,6 +33,8 @@ from .views import home_view, export_view
 urlpatterns = [
     # path('', TemplateView.as_view(template_name='index.html')),
     # path('', RedirectView.as_view(permanent=True, url='static/index.html')),
+    path('', home_view, name='home'),
+    path('favicon.ico', serve, {'path': 'image/favicon.ico'}),
     path('admin/', admin.site.urls),
     path('account/', include(('account.urls', 'account'), namespace='account')),
     # 不要直接暴露Token接口，要通过views对用户禁用，用户主动登出等情况加以验证
@@ -43,7 +46,6 @@ urlpatterns = [
     path('order/', include(('order.urls', 'order'), namespace='order')),
     path('pay/', include(('pay.urls', 'pay'), namespace='pay')),
     # path('vue_admin/', include(('vue_admin.urls', 'vue_admin'), namespace='vue_admin')),
-    path('', home_view, name='home'),
     path('export/', export_view, name='export'),
 ]
 
