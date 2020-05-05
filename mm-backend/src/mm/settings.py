@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'django_filters',
+    'drf_yasg',
     # Local apps
     'account.apps.AccountConfig',
     'analysis.apps.AnalysisConfig',
@@ -256,7 +257,7 @@ LOGGING = {
             'style': '{',
         },
         'simple': {
-            'format': '{levelname} {asctime} {pathname} {funcName} {lineno} {message}',
+            'format': '{levelname} {asctime} {funcName} {lineno} {message}',
             'style': '{',
         },
     },
@@ -282,7 +283,7 @@ LOGGING = {
             'maxBytes': 1024*1024*5,
             'backupCount': 5,
             'delay': True,
-            'formatter': 'simple'
+            'formatter': 'verbose'
         },
         'django_console': {
             'level': 'INFO',

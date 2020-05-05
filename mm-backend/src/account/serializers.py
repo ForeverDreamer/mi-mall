@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from .validators import is_phone, is_veri_code, is_email, is_password
+from vue_admin.serializers import AdminInfoSerializer, ResMenuSerializer
 
 User = get_user_model()
 LOGGER_NAME = '{}.{}'.format(settings.PROJECT_NAME, __name__)
@@ -68,3 +69,23 @@ class AccountLoginSerializer(serializers.Serializer):
             logger.warning(password + ' => ' + error_msg)
             raise serializers.ValidationError('密码格式错误！')
         return password
+
+
+class TokenSerializer(serializers.Serializer):
+    exp = serializers.CharField(max_length=20)
+    access = serializers.CharField(max_length=100)
+
+
+class StringListField(serializers.ListField):
+    child = serializers.CharField()
+
+
+class NavMenuSerializer(serializers.Serializer):
+    admin_info = AdminInfoSerializer(read_only=True)
+    menus = ResMenuSerializer(read_only=True, many=True)
+    permitted_routes = StringListField()
+
+
+class AccountLoginResSerializer(serializers.Serializer):
+    token = TokenSerializer(read_only=True)
+    nav_menu = NavMenuSerializer(read_only=True, required=False)

@@ -36,6 +36,19 @@ class MenuSerializer(serializers.ModelSerializer):
         ]
 
 
+class ResMenuSerializer(serializers.ModelSerializer):
+    submenus = SubmenuSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Menu
+        fields = [
+            'name',
+            'url',
+            'sub_active_index',
+            'submenus'
+        ]
+
+
 # class NavMenuSerializer(serializers.ModelSerializer):
 #     menus = MenuSerializer(many=True, read_only=True)
 #     admininfo = AdminInfoSerializer(read_only=True)

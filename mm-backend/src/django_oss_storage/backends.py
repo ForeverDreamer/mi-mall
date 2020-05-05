@@ -226,6 +226,7 @@ class OssStorage(Storage):
         logger().debug("delete name: %s", name)
         result = self.bucket.delete_object(name)
 
+
 class OssMediaStorage(OssStorage):
     def __init__(self):
         self.location = settings.MEDIA_URL
