@@ -60,7 +60,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'django_filters',
-    'django_oss_storage',
+    # 'django_oss_storage',
+    'django_oss_storage.apps.DjangoOssStorageConfig',
     # Local apps
     'account.apps.AccountConfig',
     'analysis.apps.AnalysisConfig',

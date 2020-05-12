@@ -2,9 +2,9 @@ version: '3.7'
 
 services:
   cache_db:
-    image: redis
+    image: redis:6.0.1
   db:
-    image: mysql:5.7
+    image: mysql:5.7.30
     environment:
       MYSQL_DATABASE: 'mmdb'
       MYSQL_ROOT_PASSWORD: 'MyNewPass4!'
@@ -14,7 +14,7 @@ services:
   web:
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/backend.dockerfile
     environment:
       PYTHONPATH: '/app/src/'
     volumes:

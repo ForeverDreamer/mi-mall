@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   db:
-    image: mysql:5.7
+    image: mysql:5.7.30
     environment:
       MYSQL_DATABASE: 'mmdb'
       MYSQL_ROOT_PASSWORD: 'MyNewPass4!'
@@ -12,7 +12,7 @@ services:
     # ports:
       # - '3306:3306'
   cache_db:
-    image: redis
+    image: redis:6.0.1
   web_frontend:
     build:
       context: ..
