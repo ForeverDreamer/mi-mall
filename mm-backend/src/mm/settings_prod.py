@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'django_filters',
+    'django-celery-beat',
+    'django-celery-results',
     # 'django_oss_storage',
     'django_oss_storage.apps.DjangoOssStorageConfig',
     # Local apps
@@ -340,3 +342,10 @@ EMAIL_HOST_USER = email_info['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = email_info['EMAIL_HOST_PASSWORD']
 # 设置是否启用安全链接
 EMAIL_USER_TLS = bool(email_info['EMAIL_USER_TLS'])
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
