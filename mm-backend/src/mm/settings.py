@@ -50,8 +50,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'drf_yasg',
-    'django-celery-beat',
-    'django-celery-results',
+    # 'django-celery-beat',
+    # 'django-celery-results',
     # Local apps
     'account.apps.AccountConfig',
     'analysis.apps.AnalysisConfig',
