@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'django_filters',
-    'drf_yasg',
+    # 'drf_yasg',
     # 'django-celery-beat',
     # 'django-celery-results',
     # Local apps
@@ -314,18 +314,18 @@ LOGGING = {
     },
 }
 
-with open("mm/email_info.json") as f:
-    email_info = json.load(f)
-# 设置邮件域名
-EMAIL_HOST = email_info['EMAIL_HOST']
-# 设置端口号，为数字
-EMAIL_PORT = email_info['EMAIL_PORT']
-# 设置发件人邮箱
-EMAIL_HOST_USER = email_info['EMAIL_HOST_USER']
-# 设置发件人密码
-EMAIL_HOST_PASSWORD = email_info['EMAIL_HOST_PASSWORD']
-# 设置是否启用安全链接
-EMAIL_USER_TLS = bool(email_info['EMAIL_USER_TLS'])
+# with open("mm/email_info.json") as f:
+#     email_info = json.load(f)
+# # 设置邮件域名
+# EMAIL_HOST = email_info['EMAIL_HOST']
+# # 设置端口号，为数字
+# EMAIL_PORT = email_info['EMAIL_PORT']
+# # 设置发件人邮箱
+# EMAIL_HOST_USER = email_info['EMAIL_HOST_USER']
+# # 设置发件人密码
+# EMAIL_HOST_PASSWORD = email_info['EMAIL_HOST_PASSWORD']
+# # 设置是否启用安全链接
+# EMAIL_USER_TLS = bool(email_info['EMAIL_USER_TLS'])
 
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'

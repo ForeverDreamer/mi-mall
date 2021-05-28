@@ -12,8 +12,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import ParseError, NotAuthenticated, AuthenticationFailed, PermissionDenied
 
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
+# from drf_yasg.utils import swagger_auto_schema
+# from drf_yasg import openapi
 
 from mm.exceptions import MyAuthenticationFailed, MyNotAuthenticated
 from .serializers import (
@@ -40,7 +40,7 @@ class SendCodeAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
     # @swagger_auto_schema(manual_parameters=[openapi.Parameter('phone', openapi.IN_BODY, description="手机号码", type=openapi.TYPE_STRING)])
-    @swagger_auto_schema(responses={200: openapi.Response('验证码发送成功')})
+    # @swagger_auto_schema(responses={200: openapi.Response('验证码发送成功')})
     def post(self, *args, **kwargs):
         serializer = SendCodeSerializer(data=self.request.data)
         # if not serializer.is_valid():
@@ -76,12 +76,12 @@ class CodeRegOrLoginAPIView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = CodeRegOrLoginSerializer
 
-    @swagger_auto_schema(
-        responses={
-            200: openapi.Response('手机验证码登录成功', TokenSerializer),
-            201: openapi.Response('手机验证码注册成功', TokenSerializer)
-        }
-    )
+    # @swagger_auto_schema(
+    #     responses={
+    #         200: openapi.Response('手机验证码登录成功', TokenSerializer),
+    #         201: openapi.Response('手机验证码注册成功', TokenSerializer)
+    #     }
+    # )
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
@@ -139,10 +139,10 @@ class CodeRegOrLoginAPIView(generics.CreateAPIView):
 class AccountLoginAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
-    @swagger_auto_schema(
-        request_body=AccountLoginSerializer,
-        responses={200: openapi.Response('nav_menu字段管理员登录时才有', AccountLoginResSerializer)}
-    )
+    # @swagger_auto_schema(
+    #     request_body=AccountLoginSerializer,
+    #     responses={200: openapi.Response('nav_menu字段管理员登录时才有', AccountLoginResSerializer)}
+    # )
     def post(self, *args, **kwargs):
         serializer = AccountLoginSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)

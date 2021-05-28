@@ -11,8 +11,8 @@ def get_tokens_for_user(user):
     access_token = AccessToken.for_user(user)
 
     return {
-        'exp': access_token.payload['exp'],
-        'access': str(access_token),
+        'exp': access_token['exp'],
+        'access': access_token['jti'],
     }
 
 
